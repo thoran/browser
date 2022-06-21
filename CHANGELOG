@@ -1,0 +1,10 @@
+# CHANGELOG
+
+## 20220622
+
+0.0.0: Extract Browser from dump_browser_history_to_csv.
+
+1. + Browser class from dump_browser_history_to_csv.
+2. + BOOKMARKS_LOCATION data from Bookmarks.
+3. + Browser::Base
+4. /Browser::AVAILABLE_BROSWERS/Browser::LIST/
