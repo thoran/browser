@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 20221203
+
+0.1.0: Give every browser its own locations.
+
+1. + .bookmarks_location to all classes except Base
+2. + .history_location to call classes except Base
+
+
 ## 20220622
 
 0.0.0: Extract Browser from dump_browser_history_to_csv.
