@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 20221205
+
+0.2.0: Read a bookmarks file, and split the tests per browser.
+
+1. + Browser::Base.bookmarks, .bookmarks_json, .bookmarks_plist, each taking a location.
+2. + Browser::Base.bookmarks_location, .bookmarks_sql, .history_location, .history_sql
+3. - Browser::Base.bookmarks_path, .history_path
+4. ~ every browser: class << self in place of def self.
+5. ~ Brave, Chrome, Chromium: .bookmarks_location, .history_location default to the constants.
+6. + String#camelcase, in Browser.rb
+7. + require 'json', 'Object/to_const', 'shellwords'
+8. + test/Brave_test.rb, Chrome_test.rb, Chromium_test.rb, out of Browser_test.rb
+9. + test/fixtures/Brave_bookmarks.json, Chromium_bookmarks.json
+
+
 ## 20221203
 
 0.1.0: Give every browser its own locations.

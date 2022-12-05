@@ -1,0 +1,47 @@
+{
+   "checksum": "1f23f6aebb42e587a2171e6563b63893",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13314548862466117",
+            "date_last_used": "0",
+            "guid": "205d9fcc-e76c-4cbf-bb7e-8e9de7847eaa",
+            "id": "5",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Welcome to Brave",
+            "type": "url",
+            "url": "chrome://welcome/"
+         } ],
+         "date_added": "13314548615807175",
+         "date_last_used": "0",
+         "date_modified": "13314548862466117",
+         "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "children": [  ],
+         "date_added": "13314548615807200",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
+         "id": "2",
+         "name": "Other Bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13314548615807201",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",
+         "id": "3",
+         "name": "Mobile Bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}
