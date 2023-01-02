@@ -13,7 +13,7 @@ $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 require 'Browser'
 
 describe Browser::Chrome do
-  let(:bookmarks_location){File.expand_path("#{__FILE__}/../fixtures/Chromium_bookmarks.json")}
+  let(:bookmarks_location){File.expand_path("#{__FILE__}/../../fixtures/Chromium_bookmarks.json")}
 
   describe Browser::Chrome::BOOKMARKS_LOCATION do
     it "contains the correct bookmarks location" do

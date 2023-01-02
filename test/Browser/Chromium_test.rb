@@ -1,4 +1,4 @@
-# Brave_test.rb
+# Browser_test.rb
 
 gem 'minitest'
 gem 'minitest-spec-context'
@@ -12,18 +12,18 @@ $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
 require 'Browser'
 
-describe Browser::Brave do
-  let(:bookmarks_location){File.expand_path("#{__FILE__}/../fixtures/Chromium_bookmarks.json")}
+describe Browser::Chromium do
+  let(:bookmarks_location){File.expand_path("#{__FILE__}/../../fixtures/Chromium_bookmarks.json")}
 
-  describe Browser::Brave::BOOKMARKS_LOCATION do
+  describe Browser::Chromium::BOOKMARKS_LOCATION do
     it "contains the correct bookmarks location" do
-      expect(Browser::Brave::BOOKMARKS_LOCATION).to eq('~/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks')
+      expect(Browser::Chromium::BOOKMARKS_LOCATION).to eq('~/Library/Application Support/Chromium/Default/Bookmarks')
     end
   end
 
-  describe Browser::Brave::HISTORY_LOCATION do
+  describe Browser::Chromium::HISTORY_LOCATION do
     it "contains the correct history location" do
-      expect(Browser::Brave::HISTORY_LOCATION).to eq('~/Library/Application Support/BraveSoftware/Brave-Browser/Default/History')
+      expect(Browser::Chromium::HISTORY_LOCATION).to eq('~/Library/Application Support/Chromium/Default/History')
     end
   end
 
@@ -31,11 +31,11 @@ describe Browser::Brave do
     let(:expected_bookmarks_json){JSON.parse(File.read(bookmarks_location))}
 
     it "returns an instance of Hash" do
-      expect(Browser::Brave.bookmarks(bookmarks_location)).to be_a(Hash)
+      expect(Browser::Chromium.bookmarks(bookmarks_location)).to be_a(Hash)
     end
 
     it "returns the bookmarks" do
-      expect(Browser::Brave.bookmarks(bookmarks_location)).to eq(expected_bookmarks_json)
+      expect(Browser::Chromium.bookmarks(bookmarks_location)).to eq(expected_bookmarks_json)
     end
   end
 
@@ -43,55 +43,55 @@ describe Browser::Brave do
     let(:expected_bookmarks_json){JSON.parse(File.read(bookmarks_location))}
 
     it "returns an instance of Hash" do
-      expect(Browser::Brave.bookmarks_json(bookmarks_location)).to be_a(Hash)
+      expect(Browser::Chromium.bookmarks_json(bookmarks_location)).to be_a(Hash)
     end
 
     it "returns the bookmarks" do
-      expect(Browser::Brave.bookmarks_json(bookmarks_location)).to eq(expected_bookmarks_json)
+      expect(Browser::Chromium.bookmarks_json(bookmarks_location)).to eq(expected_bookmarks_json)
     end
   end
 
   describe ".bookmarks_location" do
     context "WITHOUT arguments" do
       it "returns an instance of String" do
-        expect(Browser::Brave.bookmarks_location).to be_a(String)
+        expect(Browser::Chromium.bookmarks_location).to be_a(String)
       end
 
       it "returns the correct path" do
-        expect(Browser::Brave.bookmarks_location).to eq(File.expand_path(Browser::Brave::BOOKMARKS_LOCATION))
+        expect(Browser::Chromium.bookmarks_location).to eq(File.expand_path(Browser::Chromium::BOOKMARKS_LOCATION))
       end
     end
 
     context "WITH arguments" do
       it "returns an instance of String" do
-        expect(Browser::Brave.bookmarks_location(bookmarks_location)).to be_a(String)
+        expect(Browser::Chromium.bookmarks_location(bookmarks_location)).to be_a(String)
       end
 
       it "returns the correct path" do
-        expect(Browser::Brave.bookmarks_location(bookmarks_location)).to eq(bookmarks_location)
+        expect(Browser::Chromium.bookmarks_location(bookmarks_location)).to eq(bookmarks_location)
       end
     end
   end
 
   describe ".bookmarks_plist" do
     it "is nil" do
-      expect(Browser::Brave.bookmarks_plist).to be_nil
+      expect(Browser::Chromium.bookmarks_plist).to be_nil
     end
   end
 
   describe ".history_location" do
     it "returns an instance of String" do
-      expect(Browser::Brave.history_location).to be_a(String)
+      expect(Browser::Chromium.history_location).to be_a(String)
     end
 
     it "returns the correct path" do
-      expect(Browser::Brave.history_location).to eq(File.expand_path(Browser::Brave::HISTORY_LOCATION))
+      expect(Browser::Chromium.history_location).to eq(File.expand_path(Browser::Chromium::HISTORY_LOCATION))
     end
   end
 
   describe ".history_sql" do
     it "returns an instance of String" do
-      expect(Browser::Brave.history_sql).to be_a(String)
+      expect(Browser::Chromium.history_sql).to be_a(String)
     end
   end
 

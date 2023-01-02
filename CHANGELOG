@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 20230102
+
+0.3.0: Move each class to its own file.
+
+1. Moved Browser::Base to own file.
+2. Moved Browser::Brave to own file.
+3. Moved Browser::Chrome to own file.
+4. Moved Browser::Chromium to own file.
+5. Moved Browser::ChromiumBased to own file.
+6. Moved Browser::Firefox to own file.
+7. Moved Browser::FirefoxBased to own file.
+8. Moved Browser::Safari to own file.
+9. Moved Browser::TorBrowser to own file.
+10. + TopLevelBrowser.rb.
+11. Moved tests to Browser directory.
+12. + Firefox test.
+13. + Safari test.
+14. + TorBrowser test.
+
+
 ## 20221205
 
 0.2.0: Read a bookmarks file, and split the tests per browser.

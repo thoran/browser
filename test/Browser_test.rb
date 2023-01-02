@@ -27,7 +27,7 @@ describe Browser do
   end
 
   Browser::LIST.each do |browser|
-    browser_test_filename = File.expand_path("#{__FILE__}/../#{browser}_test")
+    browser_test_filename = File.expand_path("#{__FILE__}/../Browser/#{browser}_test")
     require browser_test_filename
   end
 end
