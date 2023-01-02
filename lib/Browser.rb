@@ -2,25 +2,10 @@
 # Browser
 
 # 20230102
-# 0.3.1
+# 0.4.0
 
-# Changes:
-# 1. Moved Browser::Base to own file.
-# 2. Moved Browser::Brave to own file.
-# 3. Moved Browser::Chrome to own file.
-# 4. Moved Browser::Chromium to own file.
-# 5. Moved Browser::ChromiumBased to own file.
-# 6. Moved Browser::Firefox to own file.
-# 7. Moved Browser::FirefoxBased to own file.
-# 8. Moved Browser::Safari to own file.
-# 9. Moved Browser::TorBrowser to own file.
-# 10. + TopLevelBrowser.rb.
-# 11. Moved tests to Browser directory.
-# 12. + Firefox test.
-# 13. + Safari test.
-# 14. + TorBrowser test.
-# 0/1
-# 15. Made the tests uniform.
+# Changes since 0.3:
+# 1. + Browser::History
 
 # History:
 # I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
@@ -71,7 +56,7 @@ class Browser
   end
 
   def bookmarks_plist
-    delegate.class.bookmarks_plist
+    delegate.class.bookmarks_plist(@bookmarks_location)
   end
 
   def bookmarks_sql
@@ -82,9 +67,16 @@ class Browser
     delegate.class.history_sql
   end
 
+  def history
+    delegate.class.history(@history_location)
+  end
+
   private
 
   def delegate
-    @delegate ||= "Browser::#{@name.camelcase}".to_const.new
+    @delegate ||= "Browser::#{@name.camelcase}".to_const.new(
+      bookmarks_location: @bookmarks_location,
+      history_location: @history_location
+    )
   end
 end

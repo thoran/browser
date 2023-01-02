@@ -1,3 +1,5 @@
+require_relative './History'
+
 class Browser
   class Base
     class << self
@@ -30,6 +32,27 @@ class Browser
       def history_sql
         raise 'No concrete implementation for .history_sql.'
       end
+
+      def history(history_location = nil)
+        Browser::History.new(self.new(history_location: history_location))
+      end
+    end # class << self
+
+    attr_accessor\
+      :bookmarks_location,
+      :history_location
+
+    def initialize(bookmarks_location: nil, history_location: nil)
+      @bookmarks_location = bookmarks_location || self.class.bookmarks_location
+      @history_location = history_location || self.class.history_location
+    end
+
+    def name
+      self.class.to_s.split(':').last
+    end
+
+    def history_sql
+      self.class.history_sql
     end
   end
 end
