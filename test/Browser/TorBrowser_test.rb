@@ -1,4 +1,4 @@
-# TorBrowser_test.rb
+# Firefox_test.rb
 
 gem 'minitest'
 gem 'minitest-spec-context'
@@ -7,24 +7,29 @@ require 'minitest/autorun'
 require 'minitest-spec-context'
 require 'rspec/expectations/minitest_integration'
 
-lib_dir = File.expand_path(File.join(__FILE__, '..', '..', 'lib'))
+lib_dir = File.expand_path(File.join(__FILE__, '..', '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
 require 'Browser'
 
 describe Browser::TorBrowser do
-  let(:bookmarks_location){'/path/to/bookmarks'}
-  let(:history_location){'/path/to/history'}
+  let(:bookmarks_fixtures_location){File.expand_path("#{__FILE__}/../fixtures/Chromium_bookmarks.json")}
+  let(:history_fixtures_location){'/path/to/history'}
+  let(:history_sql){'SELECT * FROM moz_historyvisits ORDER BY ? DESC;'}
 
   describe Browser::TorBrowser::BOOKMARKS_LOCATION do
+    let(:expected_bookmarks_location){'~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite'}
+
     it "contains the correct bookmarks location" do
-      expect(Browser::TorBrowser::BOOKMARKS_LOCATION).to eq('~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite')
+      expect(Browser::TorBrowser::BOOKMARKS_LOCATION).to eq(expected_bookmarks_location)
     end
   end
 
   describe Browser::TorBrowser::HISTORY_LOCATION do
+    let(:expected_history_location){'~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite'}
+
     it "contains the correct history location" do
-      expect(Browser::TorBrowser::HISTORY_LOCATION).to eq('~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite')
+      expect(Browser::TorBrowser::HISTORY_LOCATION).to eq(expected_history_location)
     end
   end
 
@@ -39,7 +44,7 @@ describe Browser::TorBrowser do
 
     describe ".bookmarks_json" do
       it "returns nil" do
-        expect(subject.bookmarks_json(bookmarks_location)).to be_nil
+        expect(subject.bookmarks_json(bookmarks_fixtures_location)).to be_nil
       end
     end
 
@@ -56,11 +61,11 @@ describe Browser::TorBrowser do
 
       context "WITH arguments" do
         it "returns an instance of String" do
-          expect(subject.bookmarks_location(bookmarks_location)).to be_a(String)
+          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.bookmarks_location(bookmarks_location)).to eq(bookmarks_location)
+          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to eq(bookmarks_fixtures_location)
         end
       end
     end
@@ -94,11 +99,11 @@ describe Browser::TorBrowser do
 
       context "WITH arguments" do
         it "returns an instance of String" do
-          expect(subject.history_location(history_location)).to be_a(String)
+          expect(subject.history_location(history_fixtures_location)).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.history_location(history_location)).to eq(history_location)
+          expect(subject.history_location(history_fixtures_location)).to eq(history_fixtures_location)
         end
       end
     end
@@ -115,7 +120,7 @@ describe Browser::TorBrowser do
   end
 
   context "instance methods" do
-    subject{Browser.new(browser_name, bookmarks_location: bookmarks_location, history_location: history_location)}
+    subject{Browser.new(browser_name, bookmarks_location: bookmarks_fixtures_location, history_location: history_fixtures_location)}
 
     let(:browser_name){'TorBrowser'}
 
@@ -129,11 +134,11 @@ describe Browser::TorBrowser do
       end
 
       it "assigns @bookmarks_location" do
-        expect(subject.instance_variable_get(:@bookmarks_location)).to eq(bookmarks_location)
+        expect(subject.instance_variable_get(:@bookmarks_location)).to eq(bookmarks_fixtures_location)
       end
 
       it "assigns @history_location" do
-        expect(subject.instance_variable_get(:@history_location)).to eq(history_location)
+        expect(subject.instance_variable_get(:@history_location)).to eq(history_fixtures_location)
       end
     end
 

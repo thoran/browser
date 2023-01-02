@@ -1,8 +1,8 @@
 # Browser.rb
 # Browser
 
-# 20221205, 20230102
-# 0.3.0
+# 20230102
+# 0.3.1
 
 # Changes:
 # 1. Moved Browser::Base to own file.
@@ -19,6 +19,8 @@
 # 12. + Firefox test.
 # 13. + Safari test.
 # 14. + TorBrowser test.
+# 0/1
+# 15. Made the tests uniform.
 
 # History:
 # I realised when wanting to dump all bookmarks from any browsers on one machine for import to another

@@ -1,4 +1,4 @@
-# Browser_test.rb
+# Chrome_test.rb
 
 gem 'minitest'
 gem 'minitest-spec-context'
@@ -7,153 +7,199 @@ require 'minitest/autorun'
 require 'minitest-spec-context'
 require 'rspec/expectations/minitest_integration'
 
-lib_dir = File.expand_path(File.join(__FILE__, '..', '..', 'lib'))
+lib_dir = File.expand_path(File.join(__FILE__, '..', '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
 require 'Browser'
 
 describe Browser::Chrome do
-  let(:bookmarks_location){File.expand_path("#{__FILE__}/../../fixtures/Chromium_bookmarks.json")}
+  let(:bookmarks_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Chromium_bookmarks.json")}
+  let(:history_fixtures_location){'/path/to/history'}
+  let(:history_sql){'SELECT * FROM urls ORDER BY last_visit_time DESC;'}
 
   describe Browser::Chrome::BOOKMARKS_LOCATION do
+    let(:expected_bookmarks_location){'~/Library/Application Support/Google/Chrome/Default/Bookmarks'}
+
     it "contains the correct bookmarks location" do
-      expect(Browser::Chrome::BOOKMARKS_LOCATION).to eq('~/Library/Application Support/Google/Chrome/Default/Bookmarks')
+      expect(Browser::Chrome::BOOKMARKS_LOCATION).to eq(expected_bookmarks_location)
     end
   end
 
   describe Browser::Chrome::HISTORY_LOCATION do
+    let(:expected_history_location){'~/Library/Application Support/Google/Chrome/Default/History'}
+
     it "contains the correct history location" do
-      expect(Browser::Chrome::HISTORY_LOCATION).to eq('~/Library/Application Support/Google/Chrome/Default/History')
+      expect(Browser::Chrome::HISTORY_LOCATION).to eq(expected_history_location)
     end
   end
 
-  describe ".bookmarks" do
-    let(:expected_bookmarks_json){JSON.parse(File.read(bookmarks_location))}
+  context "class methods" do
+    subject{Browser::Chrome}
 
-    it "returns an instance of Hash" do
-      expect(Browser::Chrome.bookmarks(bookmarks_location)).to be_a(Hash)
+    describe ".bookmarks" do
+      let(:expected_bookmarks){JSON.parse(File.read(bookmarks_fixtures_location))}
+
+      it "returns an instance of Hash" do
+        expect(subject.bookmarks(bookmarks_fixtures_location)).to be_a(Hash)
+      end
+
+      it "returns the bookmarks" do
+        expect(subject.bookmarks(bookmarks_fixtures_location)).to eq(expected_bookmarks)
+      end
     end
 
-    it "returns the bookmarks" do
-      expect(Browser::Chrome.bookmarks(bookmarks_location)).to eq(expected_bookmarks_json)
+    describe ".bookmarks_json" do
+      let(:expected_bookmarks_json){File.read(bookmarks_fixtures_location)}
+
+      it "returns an instance of Hash" do
+        expect(subject.bookmarks_json(bookmarks_fixtures_location)).to be_a(String)
+      end
+
+      it "returns the bookmarks" do
+        expect(subject.bookmarks_json(bookmarks_fixtures_location)).to eq(expected_bookmarks_json)
+      end
     end
-  end
 
-  describe ".bookmarks_json" do
-    let(:expected_bookmarks_json){JSON.parse(File.read(bookmarks_location))}
+    describe ".bookmarks_location" do
+      context "WITHOUT arguments" do
+        it "returns an instance of String" do
+          expect(subject.bookmarks_location).to be_a(String)
+        end
 
-    it "returns an instance of Hash" do
-      expect(Browser::Chrome.bookmarks_json(bookmarks_location)).to be_a(Hash)
+        it "returns the correct path" do
+          expect(subject.bookmarks_location).to eq(File.expand_path(subject::BOOKMARKS_LOCATION))
+        end
+      end
+
+      context "WITH arguments" do
+        it "returns an instance of String" do
+          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to be_a(String)
+        end
+
+        it "returns the correct path" do
+          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to eq(bookmarks_fixtures_location)
+        end
+      end
     end
 
-    it "returns the bookmarks" do
-      expect(Browser::Chrome.bookmarks_json(bookmarks_location)).to eq(expected_bookmarks_json)
+    describe ".bookmarks_plist" do
+      it "is nil" do
+        expect(subject.bookmarks_plist).to be_nil
+      end
     end
-  end
 
-  describe ".bookmarks_location" do
-    context "WITHOUT arguments" do
+    describe ".bookmarks_sql" do
       it "returns an instance of String" do
-        expect(Browser::Chrome.bookmarks_location).to be_a(String)
+        expect(subject.bookmarks_sql).to be_nil
       end
 
-      it "returns the correct path" do
-        expect(Browser::Chrome.bookmarks_location).to eq(File.expand_path(Browser::Chrome::BOOKMARKS_LOCATION))
+      it "returns the bookmarks sql" do
+        expect(subject.bookmarks_sql).to be_nil
       end
     end
 
-    context "WITH arguments" do
+    describe ".history_location" do
+      context "WITHOUT arguments" do
+        it "returns an instance of String" do
+          expect(subject.history_location).to be_a(String)
+        end
+
+        it "returns the correct path" do
+          expect(subject.history_location).to eq(File.expand_path(subject::HISTORY_LOCATION))
+        end
+      end
+
+      context "WITH arguments" do
+        it "returns an instance of String" do
+          expect(subject.history_location(history_fixtures_location)).to be_a(String)
+        end
+
+        it "returns the correct path" do
+          expect(subject.history_location(history_fixtures_location)).to eq(history_fixtures_location)
+        end
+      end
+    end
+
+    describe ".history_sql" do
       it "returns an instance of String" do
-        expect(Browser::Chrome.bookmarks_location(bookmarks_location)).to be_a(String)
+        expect(subject.history_sql).to be_a(String)
       end
 
-      it "returns the correct path" do
-        expect(Browser::Chrome.bookmarks_location(bookmarks_location)).to eq(bookmarks_location)
+      it "returns the history sql" do
+        expect(subject.history_sql).to eq(history_sql)
       end
     end
   end
 
-  describe ".bookmarks_plist" do
-    it "is nil" do
-      expect(Browser::Chrome.bookmarks_plist).to be_nil
-    end
-  end
+  context "instance methods" do
+    subject{Browser.new(browser_name, bookmarks_location: bookmarks_fixtures_location, history_location: history_fixtures_location)}
 
-  describe ".history_location" do
-    it "returns an instance of String" do
-      expect(Browser::Chrome.history_location).to be_a(String)
-    end
+    let(:browser_name){'Chrome'}
 
-    it "returns the correct path" do
-      expect(Browser::Chrome.history_location).to eq(File.expand_path(Browser::Chrome::HISTORY_LOCATION))
-    end
-  end
+    describe "#initialize" do
+      it "returns an instance of Browser" do
+        expect(subject).to be_a(Browser)
+      end
 
-  describe ".history_sql" do
-    it "returns an instance of String" do
-      expect(Browser::Chrome.history_sql).to be_a(String)
-    end
-  end
+      it "assigns @name" do
+        expect(subject.instance_variable_get(:@name)).to eq(browser_name)
+      end
 
-  describe "#initialize" do
-    it "returns an instance of Browser" do
-      expect(Browser.new('Brave')).to be_a(Browser)
+      it "assigns @bookmarks_location" do
+        expect(subject.instance_variable_get(:@bookmarks_location)).to eq(bookmarks_fixtures_location)
+      end
+
+      it "assigns @history_location" do
+        expect(subject.instance_variable_get(:@history_location)).to eq(history_fixtures_location)
+      end
     end
 
-    it "assigns @name" do
-      expect(Browser.new('Brave').instance_variable_get(:@name)).to eq('Brave')
+    describe "#name" do
+      it "returns name" do
+        expect(subject.name).to eq(browser_name)
+      end
     end
 
-    it "assigns @bookmarks_location" do
-      expect(Browser.new('Brave', bookmarks_location: bookmarks_location).instance_variable_get(:@bookmarks_location)).to eq(bookmarks_location)
-    end
-  end
+    describe "#bookmarks" do
+      let(:expected_bookmarks){JSON.parse(File.read(bookmarks_fixtures_location))}
 
-  describe "#name" do
-    it "returns name" do
-      expect(Browser.new('Brave').name).to eq('Brave')
-    end
-  end
+      it "returns a hash" do
+        expect(subject.bookmarks).to be_a(Hash)
+      end
 
-  describe "#bookmarks" do
-    let(:expected_bookmarks){JSON.parse(File.read(bookmarks_location))}
-
-    it "returns a hash" do
-      expect(Browser.new('Brave', bookmarks_location: bookmarks_location).bookmarks).to be_a(Hash)
+      it "returns the bookmarks" do
+        expect(subject.bookmarks).to eq(expected_bookmarks)
+      end
     end
 
-    it "returns the bookmarks" do
-      expect(Browser.new('Brave', bookmarks_location: bookmarks_location).bookmarks).to eq(expected_bookmarks)
+    describe "#bookmarks_json" do
+      let(:expected_bookmarks_json){File.read(bookmarks_fixtures_location)}
+
+      it "returns a hash" do
+        expect(subject.bookmarks_json).to be_a(String)
+      end
+
+      it "returns the bookmarks json" do
+        expect(subject.bookmarks_json).to eq(expected_bookmarks_json)
+      end
     end
-  end
 
-  describe "#bookmarks_json" do
-    let(:expected_bookmarks_json){JSON.parse(File.read(bookmarks_location))}
-
-    it "returns a hash" do
-      expect(Browser.new('Brave', bookmarks_location: bookmarks_location).bookmarks_json).to be_a(Hash)
+    describe "#bookmarks_plist" do
+      it "returns the bookmarks plist" do
+        expect(subject.bookmarks_plist).to be_nil
+      end
     end
 
-    it "returns the bookmarks" do
-      expect(Browser.new('Brave', bookmarks_location: bookmarks_location).bookmarks_json).to eq(expected_bookmarks_json)
+    describe "#bookmarks_sql" do
+      it "returns the bookmarks sql" do
+        expect(subject.bookmarks_sql).to be_nil
+      end
     end
-  end
 
-  describe "#bookmarks_plist" do
-    it "returns the bookmarks plist" do
-      expect(Browser.new('Brave').bookmarks_plist).to be_nil
-    end
-  end
-
-  describe "#bookmarks_sql" do
-    it "returns the bookmarks sql" do
-      expect(Browser.new('Brave').bookmarks_sql).to be_nil
-    end
-  end
-
-  describe "#history_sql" do
-    it "returns the history sql" do
-      expect(Browser.new('Brave').history_sql).to eq('SELECT * FROM urls ORDER BY last_visit_time DESC;')
+    describe "#history_sql" do
+      it "returns the history sql" do
+        expect(subject.history_sql).to eq(history_sql)
+      end
     end
   end
 end

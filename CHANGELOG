@@ -2,6 +2,11 @@
 
 ## 20230102
 
+0.3.1: Made the tests uniform.
+
+1. Made the tests uniform.
+
+
 0.3.0: Move each class to its own file.
 
 1. Moved Browser::Base to own file.
