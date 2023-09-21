@@ -17,19 +17,19 @@ describe Browser::Brave do
   let(:history_fixtures_location){'/path/to/history'}
   let(:history_sql){'SELECT * FROM urls ORDER BY last_visit_time DESC;'}
 
-  describe Browser::Brave::BOOKMARKS_LOCATION do
+  describe Browser::Brave::DEFAULT_BOOKMARKS_LOCATION do
     let(:expected_bookmarks_location){'~/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks'}
 
     it "contains the correct bookmarks location" do
-      expect(Browser::Brave::BOOKMARKS_LOCATION).to eq(expected_bookmarks_location)
+      expect(Browser::Brave::DEFAULT_BOOKMARKS_LOCATION).to eq(expected_bookmarks_location)
     end
   end
 
-  describe Browser::Brave::HISTORY_LOCATION do
+  describe Browser::Brave::DEFAULT_HISTORY_LOCATION do
     let(:expected_history_location){'~/Library/Application Support/BraveSoftware/Brave-Browser/Default/History'}
 
     it "contains the correct history location" do
-      expect(Browser::Brave::HISTORY_LOCATION).to eq(expected_history_location)
+      expect(Browser::Brave::DEFAULT_HISTORY_LOCATION).to eq(expected_history_location)
     end
   end
 
@@ -67,7 +67,7 @@ describe Browser::Brave do
         end
 
         it "returns the correct path" do
-          expect(subject.bookmarks_location).to eq(File.expand_path(subject::BOOKMARKS_LOCATION))
+          expect(subject.bookmarks_location).to eq(File.expand_path(subject::DEFAULT_BOOKMARKS_LOCATION))
         end
       end
 
@@ -105,7 +105,7 @@ describe Browser::Brave do
         end
 
         it "returns the correct path" do
-          expect(subject.history_location).to eq(File.expand_path(subject::HISTORY_LOCATION))
+          expect(subject.history_location).to eq(File.expand_path(subject::DEFAULT_HISTORY_LOCATION))
         end
       end
 

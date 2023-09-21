@@ -1,11 +1,15 @@
 # Browser.rb
 # Browser
 
-# 20230102
-# 0.4.0
+# 20230921
+# 0.4.1
 
 # Changes since 0.3:
+# -/0
 # 1. + Browser::History
+# 0/1
+# 2. ~ ChromiumBased subclasses: /BOOKMARKS_LOCATION/DEFAULT_BOOKMARKS_LOCATION/
+# 3. ~ ChromiumBased subclasses: /HISTORY_LOCATION/DEFAULT_HISTORY_LOCATION/
 
 # History:
 # I realised when wanting to dump all bookmarks from any browsers on one machine for import to another

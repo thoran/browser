@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 20230921
+
+0.4.1: Mark the location constants as defaults.
+
+1. ~ ChromiumBased subclasses: /BOOKMARKS_LOCATION/DEFAULT_BOOKMARKS_LOCATION/
+2. ~ ChromiumBased subclasses: /HISTORY_LOCATION/DEFAULT_HISTORY_LOCATION/
+
+
 ## 20230102
 
 0.4.0: + Browser::History
