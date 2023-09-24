@@ -11,7 +11,8 @@ class Browser
         nil
       end
 
-      def bookmarks_location(bookmarks_location: BOOKMARKS_LOCATION, profile_name: nil)
+      def bookmarks_location(bookmarks_location: nil, profile_name: nil)
+        bookmarks_location ||= BOOKMARKS_LOCATION
         File.expand_path(bookmarks_location)
       end
 
@@ -25,7 +26,8 @@ class Browser
         nil
       end
 
-      def history_location(history_location: HISTORY_LOCATION, profile_name: nil)
+      def history_location(history_location: nil, profile_name: nil)
+        history_location ||= HISTORY_LOCATION
         File.expand_path(history_location)
       end
 

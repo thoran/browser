@@ -1,8 +1,8 @@
 # Browser.rb
 # Browser
 
-# 20230923
-# 0.5.0
+# 20230924
+# 0.5.1
 
 # Changes since 0.3:
 # -/0 (Use a supplied profile name to determine bookmarks and history locations.)
@@ -23,6 +23,19 @@
 # 15. ~ Browser::Safari#history_location: + profile_name
 # 16. ~ Browser::TorBrowser#bookmarks_location: + profile_name
 # 17. ~ Browser::TorBrowser#history_location: + profile_name
+# 0/1 (Using the DEFAULT_PROFILE_NAME as the default value for the profile_name argument doesn't seem to work, so assigning the default value in a separate line.)
+# 18. ~ Browser::Brave#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+# 19. ~ Browser::Brave#history_location: /DEFAULT_PROFILE_NAME/nil/
+# 20. ~ Browser::Chrome#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+# 21. ~ Browser::Chrome#history_location: /DEFAULT_PROFILE_NAME/nil/
+# 22. ~ Browser::Chromium#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+# 23. ~ Browser::Chromium#history_location: /DEFAULT_PROFILE_NAME/nil/
+# 24. ~ Browser::Firefox#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+# 25. ~ Browser::Firefox#history_location: /DEFAULT_PROFILE_NAME/nil/
+# 26. ~ Browser::Safari#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+# 27. ~ Browser::Safari#history_location: /DEFAULT_PROFILE_NAME/nil/
+# 28. ~ Browser::TorBrowser#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+# 29. ~ Browser::TorBrowser#history_location: /DEFAULT_PROFILE_NAME/nil/
 
 # History:
 # I realised when wanting to dump all bookmarks from any browsers on one machine for import to another

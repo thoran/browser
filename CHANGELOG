@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 20230924
+
+0.5.1: Using the DEFAULT_PROFILE_NAME as the default value for the profile_name argument doesn't seem to work, so assigning the default value in a separate line.
+
+1. ~ Browser::Brave#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+2. ~ Browser::Brave#history_location: /DEFAULT_PROFILE_NAME/nil/
+3. ~ Browser::Chrome#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+4. ~ Browser::Chrome#history_location: /DEFAULT_PROFILE_NAME/nil/
+5. ~ Browser::Chromium#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+6. ~ Browser::Chromium#history_location: /DEFAULT_PROFILE_NAME/nil/
+7. ~ Browser::Firefox#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+8. ~ Browser::Firefox#history_location: /DEFAULT_PROFILE_NAME/nil/
+9. ~ Browser::Safari#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+10. ~ Browser::Safari#history_location: /DEFAULT_PROFILE_NAME/nil/
+11. ~ Browser::TorBrowser#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
+12. ~ Browser::TorBrowser#history_location: /DEFAULT_PROFILE_NAME/nil/
+
+
 ## 20230923
 
 0.5.0: Use a supplied profile name to determine bookmarks and history locations.
