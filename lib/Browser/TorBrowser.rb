@@ -2,16 +2,16 @@ require_relative './FirefoxBased'
 
 class Browser
   class TorBrowser < FirefoxBased
-    BOOKMARKS_LOCATION = '~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite'
-    HISTORY_LOCATION = '~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite'
+    PROFILE_ROOT_PATH = '~/Library/Application Support/TorBrowser-Data/Profiles'
+    DEFAULT_PROFILE_NAME = "**"
 
     class << self
-      def bookmarks_location(bookmarks_location = BOOKMARKS_LOCATION)
-        File.expand_path(bookmarks_location)
+      def bookmarks_location(profile_name: DEFAULT_PROFILE_NAME, bookmarks_location: nil)
+        bookmarks_location ||= File.expand_path("#{PROFILE_ROOT_PATH}/#{profile_name}/places.sqlite")
       end
 
-      def history_location(history_location = HISTORY_LOCATION)
-        File.expand_path(history_location)
+      def history_location(profile_name: DEFAULT_PROFILE_NAME, history_location: nil)
+        history_location ||= File.expand_path("#{PROFILE_ROOT_PATH}/#{profile_name}/places.sqlite")
       end
     end
   end

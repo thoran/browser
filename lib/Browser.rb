@@ -1,15 +1,28 @@
 # Browser.rb
 # Browser
 
-# 20230921
-# 0.4.1
+# 20230923
+# 0.5.0
 
 # Changes since 0.3:
-# -/0
-# 1. + Browser::History
-# 0/1
-# 2. ~ ChromiumBased subclasses: /BOOKMARKS_LOCATION/DEFAULT_BOOKMARKS_LOCATION/
-# 3. ~ ChromiumBased subclasses: /HISTORY_LOCATION/DEFAULT_HISTORY_LOCATION/
+# -/0 (Use a supplied profile name to determine bookmarks and history locations.)
+# 1. ~ Browser#initialize: + profile_name
+# 2. + Browser#bookmarks_location, so that it may be derived from the profile name in the concrete classes.
+# 3. + Browser#history_location, so that it may be derived from the profile name in the concrete classes.
+# 4. ~ Browser#delegate: + profile_name
+# 5. ~ Browser::Base#initialize: + profile_name
+# 6. ~ Browser::Brave#bookmarks_location: + profile_name
+# 7. ~ Browser::Brave#history_location: + profile_name
+# 8. ~ Browser::Chrome#bookmarks_location: + profile_name
+# 9. ~ Browser::Chrome#history_location: + profile_name
+# 10. ~ Browser::Chromium#bookmarks_location: + profile_name
+# 11. ~ Browser::Chromium#history_location: + profile_name
+# 12. ~ Browser::Firefox#bookmarks_location: + profile_name
+# 13. ~ Browser::Firefox#history_location: + profile_name
+# 14. ~ Browser::Safari#bookmarks_location: + profile_name
+# 15. ~ Browser::Safari#history_location: + profile_name
+# 16. ~ Browser::TorBrowser#bookmarks_location: + profile_name
+# 17. ~ Browser::TorBrowser#history_location: + profile_name
 
 # History:
 # I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
@@ -22,7 +35,7 @@
 # 2. Add Linux and Windows support.
 
 require 'Object/to_const'
-require 'String/camelcase'
+require 'String/pascalcase'
 
 class Browser
   LIST = %w{
@@ -44,23 +57,39 @@ class Browser
   attr_accessor :name
   attr_accessor :bookmarks_location
   attr_accessor :history_location
+  attr_accessor :profile_name
 
   def initialize(name, options = {})
     @name = name
     @bookmarks_location = options[:bookmarks_location]
     @history_location = options[:history_location]
+    @profile_name = options[:profile_name]
+  end
+
+  def bookmarks_location
+    @bookmarks_location || delegate_class.bookmarks_location(
+      profile_name: @profile_name,
+      bookmarks_location: @bookmarks_location
+    )
+  end
+
+  def history_location
+    @history_location || delegate_class.history_location(
+      profile_name: @profile_name,
+      history_location: @history_location
+    )
   end
 
   def bookmarks
-    delegate.class.bookmarks(@bookmarks_location)
+    delegate.class.bookmarks(bookmarks_location)
   end
 
   def bookmarks_json
-    delegate.class.bookmarks_json(@bookmarks_location)
+    delegate.class.bookmarks_json(bookmarks_location)
   end
 
   def bookmarks_plist
-    delegate.class.bookmarks_plist(@bookmarks_location)
+    delegate.class.bookmarks_plist(bookmarks_location)
   end
 
   def bookmarks_sql
@@ -72,15 +101,20 @@ class Browser
   end
 
   def history
-    delegate.class.history(@history_location)
+    delegate.class.history(history_location)
   end
 
   private
 
+  def delegate_class
+    "Browser::#{@name.pascalcase}".to_const
+  end
+
   def delegate
-    @delegate ||= "Browser::#{@name.camelcase}".to_const.new(
-      bookmarks_location: @bookmarks_location,
-      history_location: @history_location
+    @delegate ||= delegate_class.new(
+      bookmarks_location: bookmarks_location,
+      history_location: history_location,
+      profile_name: profile_name
     )
   end
 end

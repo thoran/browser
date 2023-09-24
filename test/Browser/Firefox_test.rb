@@ -17,19 +17,19 @@ describe Browser::Firefox do
   let(:history_fixtures_location){'/path/to/history'}
   let(:history_sql){'SELECT * FROM moz_historyvisits ORDER BY ? DESC;'}
 
-  describe Browser::Firefox::BOOKMARKS_LOCATION do
-    let(:expected_bookmarks_location){'~/Library/Application Support/Firefox/Profiles/**/places.sqlite'}
+  describe Browser::Firefox::PROFILE_ROOT_PATH do
+    let(:expected_profile_root_path){'~/Library/Application Support/Firefox/Profiles'}
 
     it "contains the correct bookmarks location" do
-      expect(Browser::Firefox::BOOKMARKS_LOCATION).to eq(expected_bookmarks_location)
+      expect(Browser::Firefox::PROFILE_ROOT_PATH).to eq(expected_profile_root_path)
     end
   end
 
-  describe Browser::Firefox::HISTORY_LOCATION do
-    let(:expected_history_location){'~/Library/Application Support/Firefox/Profiles/**/places.sqlite'}
+  describe Browser::Firefox::DEFAULT_PROFILE_NAME do
+    let(:expected_default_profile_name){'**'}
 
     it "contains the correct history location" do
-      expect(Browser::Firefox::HISTORY_LOCATION).to eq(expected_history_location)
+      expect(Browser::Firefox::DEFAULT_PROFILE_NAME).to eq(expected_default_profile_name)
     end
   end
 
@@ -50,22 +50,26 @@ describe Browser::Firefox do
 
     describe ".bookmarks_location" do
       context "WITHOUT arguments" do
+        let(:expected_bookmarks_location) do
+          File.expand_path(File.join(subject::PROFILE_ROOT_PATH, subject::DEFAULT_PROFILE_NAME, 'places.sqlite'))
+        end
+
         it "returns an instance of String" do
           expect(subject.bookmarks_location).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.bookmarks_location).to eq(File.expand_path(subject::BOOKMARKS_LOCATION))
+          expect(subject.bookmarks_location).to eq(expected_bookmarks_location)
         end
       end
 
       context "WITH arguments" do
         it "returns an instance of String" do
-          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to be_a(String)
+          expect(subject.bookmarks_location(bookmarks_location: bookmarks_fixtures_location)).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to eq(bookmarks_fixtures_location)
+          expect(subject.bookmarks_location(bookmarks_location: bookmarks_fixtures_location)).to eq(bookmarks_fixtures_location)
         end
       end
     end
@@ -88,22 +92,26 @@ describe Browser::Firefox do
 
     describe ".history_location" do
       context "WITHOUT arguments" do
+        let(:expected_history_location) do
+          File.expand_path(File.join(subject::PROFILE_ROOT_PATH, subject::DEFAULT_PROFILE_NAME, 'places.sqlite'))
+        end
+
         it "returns an instance of String" do
           expect(subject.history_location).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.history_location).to eq(File.expand_path(subject::HISTORY_LOCATION))
+          expect(subject.history_location).to eq(expected_history_location)
         end
       end
 
       context "WITH arguments" do
         it "returns an instance of String" do
-          expect(subject.history_location(history_fixtures_location)).to be_a(String)
+          expect(subject.history_location(history_location: history_fixtures_location)).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.history_location(history_fixtures_location)).to eq(history_fixtures_location)
+          expect(subject.history_location(history_location: history_fixtures_location)).to eq(history_fixtures_location)
         end
       end
     end

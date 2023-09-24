@@ -2,16 +2,16 @@ require_relative './ChromiumBased'
 
 class Browser
   class Brave < ChromiumBased
-    DEFAULT_BOOKMARKS_LOCATION = '~/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks'
-    DEFAULT_HISTORY_LOCATION = '~/Library/Application Support/BraveSoftware/Brave-Browser/Default/History'
+    PROFILE_ROOT_PATH = "~/Library/Application Support/BraveSoftware/Brave-Browser"
+    DEFAULT_PROFILE_NAME = "Default"
 
     class << self
-      def bookmarks_location(bookmarks_location = DEFAULT_BOOKMARKS_LOCATION)
-        File.expand_path(bookmarks_location)
+      def bookmarks_location(profile_name: DEFAULT_PROFILE_NAME, bookmarks_location: nil)
+        bookmarks_location ||= File.expand_path("#{PROFILE_ROOT_PATH}/#{profile_name}/Bookmarks")
       end
 
-      def history_location(history_location = DEFAULT_HISTORY_LOCATION)
-        File.expand_path(history_location)
+      def history_location(profile_name: DEFAULT_PROFILE_NAME, history_location: nil)
+        history_location ||= File.expand_path("#{PROFILE_ROOT_PATH}/#{profile_name}/History")
       end
     end
   end

@@ -1,5 +1,11 @@
+# String/pascalcase.rb
+# String#pascalcase
+
+# 20230923
+# 0.0.0
+
 class String
-  def camelcase
+  def pascalcase
     if self.match?(/_/)
       self.split('_').collect{|e| e.capitalize}.join
     else

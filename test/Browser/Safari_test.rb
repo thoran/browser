@@ -50,22 +50,26 @@ describe Browser::Safari do
 
     describe ".bookmarks_location" do
       context "WITHOUT arguments" do
+        let(:expected_bookmarks_location) do
+          File.expand_path(subject::BOOKMARKS_LOCATION)
+        end
+
         it "returns an instance of String" do
           expect(subject.bookmarks_location).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.bookmarks_location).to eq(File.expand_path(subject::BOOKMARKS_LOCATION))
+          expect(subject.bookmarks_location).to eq(expected_bookmarks_location)
         end
       end
 
       context "WITH arguments" do
         it "returns an instance of String" do
-          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to be_a(String)
+          expect(subject.bookmarks_location(bookmarks_location: bookmarks_fixtures_location)).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.bookmarks_location(bookmarks_fixtures_location)).to eq(bookmarks_fixtures_location)
+          expect(subject.bookmarks_location(bookmarks_location: bookmarks_fixtures_location)).to eq(bookmarks_fixtures_location)
         end
       end
     end
@@ -84,22 +88,26 @@ describe Browser::Safari do
 
     describe ".history_location" do
       context "WITHOUT arguments" do
+        let(:expected_history_location) do
+          File.expand_path(subject::HISTORY_LOCATION)
+        end
+
         it "returns an instance of String" do
           expect(subject.history_location).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.history_location).to eq(File.expand_path(subject::HISTORY_LOCATION))
+          expect(subject.history_location).to eq(expected_history_location)
         end
       end
 
       context "WITH arguments" do
         it "returns an instance of String" do
-          expect(subject.history_location(history_fixtures_location)).to be_a(String)
+          expect(subject.history_location(history_location: history_fixtures_location)).to be_a(String)
         end
 
         it "returns the correct path" do
-          expect(subject.history_location(history_fixtures_location)).to eq(history_fixtures_location)
+          expect(subject.history_location(history_location: history_fixtures_location)).to eq(history_fixtures_location)
         end
       end
     end

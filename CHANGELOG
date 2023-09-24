@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 20230923
+
+0.5.0: Use a supplied profile name to determine bookmarks and history locations.
+
+1. ~ Browser#initialize: + profile_name
+2. + Browser#bookmarks_location, so that it may be derived from the profile name in the concrete classes.
+3. + Browser#history_location, so that it may be derived from the profile name in the concrete classes.
+4. ~ Browser#delegate: + profile_name
+5. ~ Browser::Base#initialize: + profile_name
+6. ~ Browser::Brave#bookmarks_location: + profile_name
+7. ~ Browser::Brave#history_location: + profile_name
+8. ~ Browser::Chrome#bookmarks_location: + profile_name
+9. ~ Browser::Chrome#history_location: + profile_name
+10. ~ Browser::Chromium#bookmarks_location: + profile_name
+11. ~ Browser::Chromium#history_location: + profile_name
+12. ~ Browser::Firefox#bookmarks_location: + profile_name
+13. ~ Browser::Firefox#history_location: + profile_name
+14. ~ Browser::Safari#bookmarks_location: + profile_name
+15. ~ Browser::Safari#history_location: + profile_name
+16. ~ Browser::TorBrowser#bookmarks_location: + profile_name
+17. ~ Browser::TorBrowser#history_location: + profile_name
+
+
 ## 20230921
 
 0.4.1: Mark the location constants as defaults.

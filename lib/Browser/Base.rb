@@ -40,11 +40,13 @@ class Browser
 
     attr_accessor\
       :bookmarks_location,
-      :history_location
+      :history_location,
+      :profile_name
 
-    def initialize(bookmarks_location: nil, history_location: nil)
-      @bookmarks_location = bookmarks_location || self.class.bookmarks_location
-      @history_location = history_location || self.class.history_location
+    def initialize(bookmarks_location: nil, history_location: nil, profile_name: nil)
+      @bookmarks_location = bookmarks_location || self.class.bookmarks_location(profile_name: profile_name)
+      @history_location = history_location || self.class.history_location(profile_name: profile_name)
+      @profile_name = profile_name
     end
 
     def name

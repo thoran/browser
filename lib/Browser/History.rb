@@ -1,7 +1,7 @@
 require 'Array/to_csv_row'
 require 'date'
 require 'sqlite3'
-require 'String/camelcase'
+require 'String/pascalcase'
 require 'String/wrap'
 
 class Browser
@@ -53,7 +53,7 @@ class Browser
     end
 
     def csv_filename
-      "#{@browser_instance.name.camelcase}History_#{Date.today}.csv"
+      "#{@browser_instance.name.pascalcase}History_#{Date.today}.csv"
     end
 
     def csv_file
