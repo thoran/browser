@@ -2,7 +2,7 @@
 # Browser
 
 # 20230924
-# 0.5.1
+# 0.5.2
 
 # Changes since 0.3:
 # -/0 (Use a supplied profile name to determine bookmarks and history locations.)
@@ -36,6 +36,10 @@
 # 27. ~ Browser::Safari#history_location: /DEFAULT_PROFILE_NAME/nil/
 # 28. ~ Browser::TorBrowser#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
 # 29. ~ Browser::TorBrowser#history_location: /DEFAULT_PROFILE_NAME/nil/
+# 1/2 (Add the profile_name to the dumped history filename.)
+# 30. ~ Browser#history: + profile_name argument
+# 31. ~ Browser::Base#history: + profile_name argument
+# 32. ~ Browser::History#csv_filename: + profile_name in the filename
 
 # History:
 # I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
@@ -114,7 +118,7 @@ class Browser
   end
 
   def history
-    delegate.class.history(history_location)
+    delegate.class.history(history_location: history_location, profile_name: @profile_name)
   end
 
   private
@@ -127,7 +131,7 @@ class Browser
     @delegate ||= delegate_class.new(
       bookmarks_location: bookmarks_location,
       history_location: history_location,
-      profile_name: profile_name
+      profile_name: @profile_name
     )
   end
 end

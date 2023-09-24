@@ -33,8 +33,8 @@ class Browser
         raise 'No concrete implementation for .history_sql.'
       end
 
-      def history(history_location = nil)
-        Browser::History.new(self.new(history_location: history_location))
+      def history(history_location:, profile_name: nil)
+        Browser::History.new(self.new(history_location: history_location, profile_name: profile_name))
       end
     end # class << self
 

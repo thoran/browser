@@ -6,7 +6,6 @@ require 'String/wrap'
 
 class Browser
   class History
-
     def initialize(browser_instance)
       @browser_instance = browser_instance
     end
@@ -53,12 +52,15 @@ class Browser
     end
 
     def csv_filename
-      "#{@browser_instance.name.pascalcase}History_#{Date.today}.csv"
+      if @browser_instance.profile_name.nil?
+        "#{@browser_instance.name.pascalcase}_History_#{Date.today}.csv"
+      else
+        "#{@browser_instance.name.pascalcase}_#{@browser_instance.profile_name}_History_#{Date.today}.csv"
+      end
     end
 
     def csv_file
       @csv_file ||= File.open(csv_filename, 'w')
     end
-
   end
 end

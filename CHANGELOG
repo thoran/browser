@@ -2,6 +2,13 @@
 
 ## 20230924
 
+0.5.2: Add the profile_name to the dumped history filename.
+
+1. ~ Browser#history: + profile_name argument
+2. ~ Browser::Base#history: + profile_name argument
+3. ~ Browser::History#csv_filename: + profile_name in the filename
+
+
 0.5.1: Using the DEFAULT_PROFILE_NAME as the default value for the profile_name argument doesn't seem to work, so assigning the default value in a separate line.
 
 1. ~ Browser::Brave#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
