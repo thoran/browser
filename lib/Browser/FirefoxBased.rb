@@ -13,6 +13,11 @@ class Browser
         nil # FIXME?: Maybe should not be nil in time...
       end
 
+      def bookmarks_location(profile_name: nil, bookmarks_location: nil)
+        profile_name ||= DEFAULT_PROFILE_NAME
+        File.expand_path("#{PROFILE_ROOT_PATH}/#{profile_name}/places.sqlite")
+      end
+
       def bookmarks_plist(bookmarks_location = nil)
         bookmarks_location = bookmarks_location || self.bookmarks_location
         nil # FIXME?: Maybe should not be nil in time...
@@ -20,6 +25,11 @@ class Browser
 
       def bookmarks_sql
         'SELECT * FROM moz_bookmarks ORDER BY ? DESC;'
+      end
+
+      def history_location(profile_name: nil, history_location: nil)
+        profile_name ||= DEFAULT_PROFILE_NAME
+        File.expand_path("#{PROFILE_ROOT_PATH}/#{profile_name}/places.sqlite")
       end
 
       def history_sql
