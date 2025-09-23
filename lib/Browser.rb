@@ -1,10 +1,10 @@
 # Browser.rb
 # Browser
 
-# 20230924
-# 0.5.2
+# 20250922
+# 0.5.3
 
-# Changes since 0.3:
+# Changes since 0.4:
 # -/0 (Use a supplied profile name to determine bookmarks and history locations.)
 # 1. ~ Browser#initialize: + profile_name
 # 2. + Browser#bookmarks_location, so that it may be derived from the profile name in the concrete classes.
@@ -40,12 +40,19 @@
 # 30. ~ Browser#history: + profile_name argument
 # 31. ~ Browser::Base#history: + profile_name argument
 # 32. ~ Browser::History#csv_filename: + profile_name in the filename
+# 2/3 (Remove unnecessary delegate method.)
+# 33. - Browser#delegate
+# 34. ~ Browser#bookmarks: /delegate.class/delegate_class/
+# 35. ~ Browser#bookmarks_json: /delegate.class/delegate_class/
+# 36. ~ Browser#bookmarks_plist: /delegate.class/delegate_class/
+# 37. ~ Browser#bookmarks_sql: /delegate.class/delegate_class/
+# 38. ~ Browser#history_sql: /delegate.class/delegate_class/
+# 39. ~ Browser#history: /delegate.class/delegate_class/
 
-# History:
-# I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
-# that I'd already written something of the sort for history called dump_browser_history_to_csv and
-# that it would probably be a good idea to combine those efforts into a single browser library to handle
-# both bookmarks and history, as well as any other similar browser data extraction effort.
+# History: I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
+# that I'd already written something of the sort for history called dump_browser_history_to_csv and that it
+# would probably be a good idea to combine those efforts into a single browser library to handle both bookmarks
+# and history, as well as any other similar browser data extraction effort.
 
 # Todo:
 # 1. Add Opera support.
@@ -98,40 +105,32 @@ class Browser
   end
 
   def bookmarks
-    delegate.class.bookmarks(bookmarks_location)
+    delegate_class.bookmarks(bookmarks_location)
   end
 
   def bookmarks_json
-    delegate.class.bookmarks_json(bookmarks_location)
+    delegate_class.bookmarks_json(bookmarks_location)
   end
 
   def bookmarks_plist
-    delegate.class.bookmarks_plist(bookmarks_location)
+    delegate_class.bookmarks_plist(bookmarks_location)
   end
 
   def bookmarks_sql
-    delegate.class.bookmarks_sql
+    delegate_class.bookmarks_sql
   end
 
   def history_sql
-    delegate.class.history_sql
+    delegate_class.history_sql
   end
 
   def history
-    delegate.class.history(history_location: history_location, profile_name: @profile_name)
+    delegate_class.history(history_location: history_location, profile_name: @profile_name)
   end
 
   private
 
   def delegate_class
     "Browser::#{@name.pascalcase}".to_const
-  end
-
-  def delegate
-    @delegate ||= delegate_class.new(
-      bookmarks_location: bookmarks_location,
-      history_location: history_location,
-      profile_name: @profile_name
-    )
   end
 end

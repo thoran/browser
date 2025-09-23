@@ -1,6 +1,31 @@
 # CHANGELOG
 
+## 20250922
+
+0.5.3: Remove unnecessary delegate method.
+
+1. - Browser#delegate
+2. ~ Browser#bookmarks: /delegate.class/delegate_class/
+3. ~ Browser#bookmarks_json: /delegate.class/delegate_class/
+4. ~ Browser#bookmarks_plist: /delegate.class/delegate_class/
+5. ~ Browser#bookmarks_sql: /delegate.class/delegate_class/
+6. ~ Browser#history_sql: /delegate.class/delegate_class/
+7. ~ Browser#history: /delegate.class/delegate_class/
+
+
 ## 20230924
+
+Locations onto the family classes, neither pair reachable.
+
+1. + Browser::ChromiumBased.bookmarks_location, .history_location, each with binding.pry.
+2. + Browser::FirefoxBased.bookmarks_location, .history_location
+3. Neither pair is reachable, every browser defining its own.
+4. ChromiumBased's name profile_root_path and default_profile_name, which nothing defines.
+5. FirefoxBased's name PROFILE_ROOT_PATH and DEFAULT_PROFILE_NAME, defined in the browsers where a parent cannot see them.
+6. The copy which ran from ~/lib/ruby, on 0.5.2's tree.
+7. Two files of it, written that afternoon, and it entered no version.
+8. The state is at the tag family-locations-20230924.
+
 
 0.5.2: Add the profile_name to the dumped history filename.
 
