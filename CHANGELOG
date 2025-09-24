@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## 20250925
+
+0.6.0: + Bookmarks
+
+1. + Browser::Bookmarks.from_json, .from_plist, .from_sqlite
+2. + Browser::Bookmarks: CSV, JSON, Plist, Objects, nested
+3. + Browser::Bookmarks#to_csv, #to_json, #to_plist, #to_objects
+4. + Browser::Bookmarks#dump(format), #dump_filename
+5. + Browser::History: the same four renderers, nested
+6. + Browser::History#to_json, #to_plist, #to_objects
+7. + Browser::Base#bookmarks, #history
+8. - Browser::Base.bookmarks, .bookmarks_json, .bookmarks_plist, .bookmarks_sql
+9. - Browser::Base.bookmarks_location, .history_location, .history_sql, .history
+10. - Browser::Base#history_sql
+11. ~ Browser::Base#initialize: + DEFAULT_PROFILE_NAME where none is given
+12. + ChromiumBased, FirefoxBased, Safari: root_path, profiles_path, private
+13. + ChromiumBased, FirefoxBased, Safari: .bookmarks_format, .history_format
+14. + ChromiumBased, FirefoxBased, Safari: DEFAULT_PROFILE_NAME, Default, ** and nil
+15. - ChromiumBased, FirefoxBased, Safari: .bookmarks, .bookmarks_json, .bookmarks_plist
+16. ~ Brave, Chrome, Chromium, Firefox, TorBrowser: root_path, in place of PROFILE_ROOT_PATH
+17. ~ Safari: root_path, in place of BOOKMARKS_LOCATION and HISTORY_LOCATION
+18. private throughout lib: 20 in 12 files, where there had been 2 in 2
+19. + browser.gemspec
+20. ~ Gemfile: gemspec, in place of the three gems listed
+21. ~ test/Browser/Brave_test.rb: converted to the reworked API
+22. ~ the other five tests: .bookmarks_location, .history_location, in place of PROFILE_ROOT_PATH
+23. ~ lib/Browser.rb: /Changes since 0.4/Changes since 0.5/
+24. ~ Browser#history: + a bookmarks location, both words misspelt
+
+
 ## 20250922
 
 0.5.3: Remove unnecessary delegate method.

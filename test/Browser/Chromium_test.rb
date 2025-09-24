@@ -1,4 +1,4 @@
-# Chrome_test.rb
+# Chromium_test.rb
 
 gem 'minitest'
 gem 'minitest-spec-context'
@@ -17,11 +17,19 @@ describe Browser::Chromium do
   let(:history_fixtures_location){'/path/to/history'}
   let(:history_sql){'SELECT * FROM urls ORDER BY last_visit_time DESC;'}
 
-  describe Browser::Chromium::PROFILE_ROOT_PATH do
-    let(:expected_profile_root_path){'~/Library/Application Support/Chromium'}
+  describe Browser::Chromium.bookmarks_location do
+    let(:expected_bookmarks_location){'~/Library/Application Support/Chromium/'}
 
     it "contains the correct bookmarks location" do
-      expect(Browser::Chromium::PROFILE_ROOT_PATH).to eq(expected_profile_root_path)
+      expect(Browser::Chromium.bookmarks_location).to eq(expected_bookmarks_location)
+    end
+  end
+
+  describe Browser::Chromium.history_location do
+    let(:expected_history_location){'~/Library/Application Support/Chromium/'}
+
+    it "contains the correct history location" do
+      expect(Browser::Chromium.history_location).to eq(expected_history_location)
     end
   end
 

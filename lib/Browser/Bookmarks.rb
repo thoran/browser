@@ -1,5 +1,5 @@
-# Browser/History.rb
-# Browser::History
+# Browser/Bookmarks.rb
+# Browser::Bookmarks
 
 require 'date'
 require 'json'
@@ -10,13 +10,14 @@ require 'Array/to_csv_row'
 require 'String/pascalcase'
 
 class Browser
-  class History
+  class Bookmarks
     class CSV
       def render
-        csv = ''
-        csv << csv_header_row
-        csv << csv_data_rows
-        csv << "\n"
+        csv = "title,url,folder\n"
+        @results.each do |bookmark|
+          csv << "#{bookmark[:title]},#{bookmark[:url]},#{bookmark[:folder]}\n"
+        end
+        csv
       end
 
       private
@@ -24,27 +25,11 @@ class Browser
       def initialize(results)
         @results = results
       end
-
-      def column_names
-        @results.first
-      end
-
-      def data_rows
-        @results.last
-      end
-
-      def csv_header_row
-        column_names.to_csv_row + "\n"
-      end
-
-      def csv_data_rows
-        data_rows.collect{|row| row.to_csv_row}.join("\n")
-      end
     end
 
     class JSON
       def render
-        Objects.new(@results).render.to_json
+        @results.to_json
       end
 
       private
@@ -56,7 +41,7 @@ class Browser
 
     class Plist
       def render
-        Objects.new(@results).render.to_plist
+        @results.to_plist
       end
 
       private
@@ -92,20 +77,40 @@ class Browser
       end
     end
 
+    class << self
+      def from_json(browser_instance)
+        JSON.parse(File.read(browser_instance.class.bookmarks_location))
+      end
+
+      def from_plist(browser_instance)
+        Plist.parse(File.read(browser_instance.class.bookmarks_location))
+      end
+
+      def from_sqlite(browser_instance)
+        database = SQLite3::Database.new(browser_instance.class.history_location)
+        column_names, *rows = database.execute2(browser_instance.class.history_sql)
+        [column_names, rows]
+      end
+    end
+
     def to_csv
-      CSV.new(results).render
+      CSV.new(to_objects).render
     end
 
     def to_json
-      JSON.new(results).render
+      JSON.new(to_objects).render
     end
 
     def to_plist
-      Plist.new(results).render
+      Plist.new(to_objects).render
     end
 
     def to_objects
-      Objects.new(results).render
+      case @browser_instance.bookmarks_format
+      when :json; results
+      when :plist; results
+      when :sqlite; Objects.new(results).render
+      end
     end
 
     def dump(format = :csv)
@@ -120,22 +125,15 @@ class Browser
       @browser_instance = browser_instance
     end
 
-    def database
-      @database ||= SQLite3::Database.new(@browser_instance.class.history_location)
-    end
-
     def results
-      @results ||= (
-        column_names, *rows = database.execute2(@browser_instance.class.history_sql)
-        [column_names, rows]
-      )
+      @results ||= self.class.public_send("from_#{@browser_instance.class.bookmarks_format}", @browser_instance)
     end
 
     def dump_filename(extension)
       if @browser_instance.profile_name
-        "#{@browser_instance.name.pascalcase}_#{@browser_instance.profile_name}_History_#{Date.today}.#{extension}"
+        "#{@browser_instance.name}_#{@browser_instance.profile_name}_Bookmarks_#{Date.today}.#{extension}"
       else
-        "#{@browser_instance.name.pascalcase}_History_#{Date.today}.#{extension}"
+        "#{@browser_instance.name}_Bookmarks_#{Date.today}.#{extension}"
       end
     end
   end

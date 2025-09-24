@@ -17,11 +17,19 @@ describe Browser::Firefox do
   let(:history_fixtures_location){'/path/to/history'}
   let(:history_sql){'SELECT * FROM moz_historyvisits ORDER BY ? DESC;'}
 
-  describe Browser::Firefox::PROFILE_ROOT_PATH do
-    let(:expected_profile_root_path){'~/Library/Application Support/Firefox/Profiles'}
+  describe Browser::Firefox.bookmarks_location do
+    let(:expected_bookmarks_location){'~/Library/Application Support/Firefox/Profiles/**/places.sqlite'}
 
     it "contains the correct bookmarks location" do
-      expect(Browser::Firefox::PROFILE_ROOT_PATH).to eq(expected_profile_root_path)
+      expect(Browser::Firefox.bookmarks_location).to eq(expected_bookmarks_location)
+    end
+  end
+
+  describe Browser::Firefox.history_location do
+    let(:expected_history_location){'~/Library/Application Support/Firefox/Profiles/**/places.sqlite'}
+
+    it "contains the correct history location" do
+      expect(Browser::Firefox.history_location).to eq(expected_history_location)
     end
   end
 

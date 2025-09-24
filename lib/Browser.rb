@@ -1,53 +1,35 @@
 # Browser.rb
 # Browser
 
-# 20250922
-# 0.5.3
+# 20250922, 23, 24, 25
+# 0.6.0
 
-# Changes since 0.4:
-# -/0 (Use a supplied profile name to determine bookmarks and history locations.)
-# 1. ~ Browser#initialize: + profile_name
-# 2. + Browser#bookmarks_location, so that it may be derived from the profile name in the concrete classes.
-# 3. + Browser#history_location, so that it may be derived from the profile name in the concrete classes.
-# 4. ~ Browser#delegate: + profile_name
-# 5. ~ Browser::Base#initialize: + profile_name
-# 6. ~ Browser::Brave#bookmarks_location: + profile_name
-# 7. ~ Browser::Brave#history_location: + profile_name
-# 8. ~ Browser::Chrome#bookmarks_location: + profile_name
-# 9. ~ Browser::Chrome#history_location: + profile_name
-# 10. ~ Browser::Chromium#bookmarks_location: + profile_name
-# 11. ~ Browser::Chromium#history_location: + profile_name
-# 12. ~ Browser::Firefox#bookmarks_location: + profile_name
-# 13. ~ Browser::Firefox#history_location: + profile_name
-# 14. ~ Browser::Safari#bookmarks_location: + profile_name
-# 15. ~ Browser::Safari#history_location: + profile_name
-# 16. ~ Browser::TorBrowser#bookmarks_location: + profile_name
-# 17. ~ Browser::TorBrowser#history_location: + profile_name
-# 0/1 (Using the DEFAULT_PROFILE_NAME as the default value for the profile_name argument doesn't seem to work, so assigning the default value in a separate line.)
-# 18. ~ Browser::Brave#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
-# 19. ~ Browser::Brave#history_location: /DEFAULT_PROFILE_NAME/nil/
-# 20. ~ Browser::Chrome#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
-# 21. ~ Browser::Chrome#history_location: /DEFAULT_PROFILE_NAME/nil/
-# 22. ~ Browser::Chromium#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
-# 23. ~ Browser::Chromium#history_location: /DEFAULT_PROFILE_NAME/nil/
-# 24. ~ Browser::Firefox#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
-# 25. ~ Browser::Firefox#history_location: /DEFAULT_PROFILE_NAME/nil/
-# 26. ~ Browser::Safari#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
-# 27. ~ Browser::Safari#history_location: /DEFAULT_PROFILE_NAME/nil/
-# 28. ~ Browser::TorBrowser#bookmarks_location: /DEFAULT_PROFILE_NAME/nil/
-# 29. ~ Browser::TorBrowser#history_location: /DEFAULT_PROFILE_NAME/nil/
-# 1/2 (Add the profile_name to the dumped history filename.)
-# 30. ~ Browser#history: + profile_name argument
-# 31. ~ Browser::Base#history: + profile_name argument
-# 32. ~ Browser::History#csv_filename: + profile_name in the filename
-# 2/3 (Remove unnecessary delegate method.)
-# 33. - Browser#delegate
-# 34. ~ Browser#bookmarks: /delegate.class/delegate_class/
-# 35. ~ Browser#bookmarks_json: /delegate.class/delegate_class/
-# 36. ~ Browser#bookmarks_plist: /delegate.class/delegate_class/
-# 37. ~ Browser#bookmarks_sql: /delegate.class/delegate_class/
-# 38. ~ Browser#history_sql: /delegate.class/delegate_class/
-# 39. ~ Browser#history: /delegate.class/delegate_class/
+# Changes since 0.5:
+# -/0: + Bookmarks
+# 1. + Browser::Bookmarks.from_json, .from_plist, .from_sqlite
+# 2. + Browser::Bookmarks: CSV, JSON, Plist, Objects, nested
+# 3. + Browser::Bookmarks#to_csv, #to_json, #to_plist, #to_objects
+# 4. + Browser::Bookmarks#dump(format), #dump_filename
+# 5. + Browser::History: the same four renderers, nested
+# 6. + Browser::History#to_json, #to_plist, #to_objects
+# 7. + Browser::Base#bookmarks, #history
+# 8. - Browser::Base.bookmarks, .bookmarks_json, .bookmarks_plist, .bookmarks_sql
+# 9. - Browser::Base.bookmarks_location, .history_location, .history_sql, .history
+# 10. - Browser::Base#history_sql
+# 11. ~ Browser::Base#initialize: + DEFAULT_PROFILE_NAME where none is given
+# 12. + ChromiumBased, FirefoxBased, Safari: root_path, profiles_path, private
+# 13. + ChromiumBased, FirefoxBased, Safari: .bookmarks_format, .history_format
+# 14. + ChromiumBased, FirefoxBased, Safari: DEFAULT_PROFILE_NAME, Default, ** and nil
+# 15. - ChromiumBased, FirefoxBased, Safari: .bookmarks, .bookmarks_json, .bookmarks_plist
+# 16. ~ Brave, Chrome, Chromium, Firefox, TorBrowser: root_path, in place of PROFILE_ROOT_PATH
+# 17. ~ Safari: root_path, in place of BOOKMARKS_LOCATION and HISTORY_LOCATION
+# 18. private throughout lib: 20 in 12 files, where there had been 2 in 2
+# 19. + browser.gemspec
+# 20. ~ Gemfile: gemspec, in place of the three gems listed
+# 21. ~ test/Browser/Brave_test.rb: converted to the reworked API
+# 22. ~ the other five tests: .bookmarks_location, .history_location, in place of PROFILE_ROOT_PATH
+# 23. ~ lib/Browser.rb: /Changes since 0.4/Changes since 0.5/
+# 24. ~ Browser#history: + a bookmarks location, both words misspelt
 
 # History: I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
 # that I'd already written something of the sort for history called dump_browser_history_to_csv and that it
@@ -125,7 +107,7 @@ class Browser
   end
 
   def history
-    delegate_class.history(history_location: history_location, profile_name: @profile_name)
+    delegate_class.history(boomarks_location: bookmakrk_location, history_location: history_location, profile_name: @profile_name)
   end
 
   private

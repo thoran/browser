@@ -17,19 +17,27 @@ describe Browser::Safari do
   let(:history_fixtures_location){'/path/to/history'}
   let(:history_sql){'SELECT history_items.id, history_items.url, history_visits.visit_time FROM history_items LEFT JOIN history_visits WHERE history_items.id = history_visits.history_item ORDER BY visit_time DESC;'}
 
-  describe Browser::Safari::BOOKMARKS_LOCATION do
+  describe Browser::Safari.bookmarks_location do
     let(:expected_bookmarks_location){'~/Library/Safari/Bookmarks.plist'}
 
     it "contains the correct bookmarks location" do
-      expect(Browser::Safari::BOOKMARKS_LOCATION).to eq(expected_bookmarks_location)
+      expect(Browser::Safari.bookmarks_location).to eq(expected_bookmarks_location)
     end
   end
 
-  describe Browser::Safari::HISTORY_LOCATION do
+  describe Browser::Safari.history_location do
     let(:expected_history_location){'~/Library/Safari/History.db'}
 
     it "contains the correct history location" do
-      expect(Browser::Safari::HISTORY_LOCATION).to eq(expected_history_location)
+      expect(Browser::Safari.history_location).to eq(expected_history_location)
+    end
+  end
+
+  describe Browser::Safari::DEFAULT_PROFILE_NAME do
+    let(:expected_profile_name){nil}
+
+    it "contains the correct history location" do
+      expect(Browser::Safari::DEFAULT_PROFILE_NAME).to eq(expected_profile_name)
     end
   end
 

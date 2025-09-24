@@ -1,34 +1,43 @@
+# Browser/Safari.rb
+# Browser::Safari
+
 require_relative './Base'
 
 class Browser
   class Safari < Base
-    BOOKMARKS_LOCATION = '~/Library/Safari/Bookmarks.plist'
-    HISTORY_LOCATION = '~/Library/Safari/History.db'
+    DEFAULT_PROFILE_NAME = nil # Safari doesn't have profiles.
 
     class << self
-      def bookmarks_json(bookmarks_location = nil)
-        bookmarks_location = bookmarks_location || self.bookmarks_location
-        nil
-      end
-
       def bookmarks_location(bookmarks_location: nil, profile_name: nil)
-        bookmarks_location ||= BOOKMARKS_LOCATION
-        File.expand_path(bookmarks_location)
-      end
-
-      def bookmarks_plist(bookmarks_location = nil)
-        bookmarks_location = bookmarks_location || self.bookmarks_location
-        nil
-      end
-      alias_method :bookmarks, :bookmarks_plist
-
-      def bookmarks_sql
-        nil
+        profile_name ||= DEFAULT_PROFILE_NAME
+        File.expand_path(bookmarks_location || "#{root_path}/Bookmarks.plist")
       end
 
       def history_location(history_location: nil, profile_name: nil)
-        history_location ||= HISTORY_LOCATION
-        File.expand_path(history_location)
+        profile_name ||= DEFAULT_PROFILE_NAME
+        File.expand_path(history_location || "#{root_path}/History.db")
+      end
+
+      private
+
+      def root_path
+        "~/Library/Safari"
+      end
+
+      def profiles_path
+        nil # Safari doesn't have profiles.
+      end
+
+      def bookmarks_format
+        :plist
+      end
+
+      def history_format
+        :sqlite
+      end
+
+      def bookmarks_sql
+        nil
       end
 
       def history_sql

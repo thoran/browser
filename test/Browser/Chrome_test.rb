@@ -17,11 +17,19 @@ describe Browser::Chrome do
   let(:history_fixtures_location){'/path/to/history'}
   let(:history_sql){'SELECT * FROM urls ORDER BY last_visit_time DESC;'}
 
-  describe Browser::Chrome::PROFILE_ROOT_PATH do
-    let(:expected_profile_root_path){'~/Library/Application Support/Google/Chrome'}
+  describe Browser::Chrome.bookmarks_location do
+    let(:expected_bookmarks_location){'~/Library/Application Support/Google/Chrome/'}
 
     it "contains the correct bookmarks location" do
-      expect(Browser::Chrome::PROFILE_ROOT_PATH).to eq(expected_profile_root_path)
+      expect(Browser::Chrome.bookmarks_location).to eq(expected_bookmarks_location)
+    end
+  end
+
+  describe Browser::Chrome.history_location do
+    let(:expected_history_location){'~/Library/Application Support/Google/Chrome/'}
+
+    it "contains the correct history location" do
+      expect(Browser::Chrome.history_location).to eq(expected_history_location)
     end
   end
 
