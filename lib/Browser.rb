@@ -1,8 +1,8 @@
 # Browser.rb
 # Browser
 
-# 20250922, 23, 24, 25
-# 0.6.0
+# 20260822
+# 0.6.1
 
 # Changes since 0.5:
 # -/0: + Bookmarks
@@ -30,6 +30,23 @@
 # 22. ~ the other five tests: .bookmarks_location, .history_location, in place of PROFILE_ROOT_PATH
 # 23. ~ lib/Browser.rb: /Changes since 0.4/Changes since 0.5/
 # 24. ~ Browser#history: + a bookmarks location, both words misspelt
+# 0/1 (The 0.6.0 design made to run, and its tests brought up to it.)
+# 25. ~ Browser::Bookmarks, Browser::History: the location given was stored and ignored, in five places.
+# 26. ~ Browser::Bookmarks.from_json, .from_plist: JSON and Plist named the nested renderers.
+# 27. ~ Browser::Bookmarks.from_sqlite: opened the history database, ran the history query.
+# 28. ~ Browser::Bookmarks#to_objects: the instance where the class was meant.
+# 29. ~ browser.rb.gemspec: /plist/CFPropertyList/, plist reading XML alone, Safari writing binary.
+# 30. + lib/Browser/VERSION.rb, which the gemspec required and which was never there.
+# 31. + browser.rb.gemspec: sqlite3, required and undeclared, so a consumer met LoadError.
+# 32. ~ browser.rb.gemspec: /browser/browser.rb/, the shorter name taken.
+# 33. /browser.gemspec/browser.rb.gemspec/
+# 34. + Rakefile: the test task, and two building SQLite fixtures.
+# 35. + test/fixtures/ChromiumBased_history.sqlite, Safari_bookmarks.plist, Safari_history.sqlite
+# 36. ~ test/Browser/*_test.rb: converted from the pre-rework API.
+# 37. - Gemfile.lock, three years older than the gemspec, never resolved against it.
+# 38. - browser.rb.gemspec: spec.date, a release planned for 2025-09-27 which did not happen.
+# 39. ~ browser.rb.gemspec: /Ruby/MIT/; + LICENSE, in the files.
+# 40. + .gitignore: !test/fixtures/*.sqlite, data rather than build output.
 
 # History: I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
 # that I'd already written something of the sort for history called dump_browser_history_to_csv and that it

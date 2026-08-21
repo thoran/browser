@@ -45,3 +45,6 @@ _yardoc
 
 # AI
 .claude
+
+# test fixtures are data, not build output — keep them despite a global *.sqlite ignore
+!test/fixtures/*.sqlite

@@ -3,7 +3,7 @@
 
 require 'date'
 require 'json'
-require 'plist'
+require 'cfpropertylist'
 require 'sqlite3'
 
 require 'Array/to_csv_row'
@@ -41,7 +41,9 @@ class Browser
 
     class Plist
       def render
-        @results.to_plist
+        list = CFPropertyList::List.new
+        list.value = CFPropertyList.guess(@results)
+        list.to_str(CFPropertyList::List::FORMAT_XML)
       end
 
       private
@@ -79,16 +81,16 @@ class Browser
 
     class << self
       def from_json(browser_instance)
-        JSON.parse(File.read(browser_instance.class.bookmarks_location))
+        ::JSON.parse(File.read(browser_instance.bookmarks_location))
       end
 
       def from_plist(browser_instance)
-        Plist.parse(File.read(browser_instance.class.bookmarks_location))
+        CFPropertyList.native_types(CFPropertyList::List.new(file: browser_instance.bookmarks_location).value)
       end
 
       def from_sqlite(browser_instance)
-        database = SQLite3::Database.new(browser_instance.class.history_location)
-        column_names, *rows = database.execute2(browser_instance.class.history_sql)
+        database = SQLite3::Database.new(browser_instance.bookmarks_location)
+        column_names, *rows = database.execute2(browser_instance.class.send(:bookmarks_sql))
         [column_names, rows]
       end
     end
@@ -106,7 +108,7 @@ class Browser
     end
 
     def to_objects
-      case @browser_instance.bookmarks_format
+      case @browser_instance.class.send(:bookmarks_format)
       when :json; results
       when :plist; results
       when :sqlite; Objects.new(results).render
@@ -126,14 +128,14 @@ class Browser
     end
 
     def results
-      @results ||= self.class.public_send("from_#{@browser_instance.class.bookmarks_format}", @browser_instance)
+      @results ||= self.class.public_send("from_#{@browser_instance.class.send(:bookmarks_format)}", @browser_instance)
     end
 
     def dump_filename(extension)
       if @browser_instance.profile_name
-        "#{@browser_instance.name}_#{@browser_instance.profile_name}_Bookmarks_#{Date.today}.#{extension}"
+        "#{@browser_instance.send(:name)}_#{@browser_instance.profile_name}_Bookmarks_#{Date.today}.#{extension}"
       else
-        "#{@browser_instance.name}_Bookmarks_#{Date.today}.#{extension}"
+        "#{@browser_instance.send(:name)}_Bookmarks_#{Date.today}.#{extension}"
       end
     end
   end

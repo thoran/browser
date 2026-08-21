@@ -13,136 +13,63 @@ $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 require 'Browser'
 
 describe Browser::Safari do
-  let(:bookmarks_fixtures_location){'/path/to/bookmarks'}
-  let(:history_fixtures_location){'/path/to/history'}
-  let(:history_sql){'SELECT history_items.id, history_items.url, history_visits.visit_time FROM history_items LEFT JOIN history_visits WHERE history_items.id = history_visits.history_item ORDER BY visit_time DESC;'}
+  let(:bookmarks_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Safari_bookmarks.plist")}
+  let(:history_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Safari_history.sqlite")}
+  let(:expected_history_sql){'SELECT history_items.id, history_items.url, history_visits.visit_time FROM history_items LEFT JOIN history_visits WHERE history_items.id = history_visits.history_item ORDER BY visit_time DESC;'}
 
-  describe Browser::Safari.bookmarks_location do
-    let(:expected_bookmarks_location){'~/Library/Safari/Bookmarks.plist'}
-
-    it "contains the correct bookmarks location" do
-      expect(Browser::Safari.bookmarks_location).to eq(expected_bookmarks_location)
-    end
-  end
-
-  describe Browser::Safari.history_location do
-    let(:expected_history_location){'~/Library/Safari/History.db'}
-
-    it "contains the correct history location" do
-      expect(Browser::Safari.history_location).to eq(expected_history_location)
-    end
-  end
-
-  describe Browser::Safari::DEFAULT_PROFILE_NAME do
-    let(:expected_profile_name){nil}
-
-    it "contains the correct history location" do
-      expect(Browser::Safari::DEFAULT_PROFILE_NAME).to eq(expected_profile_name)
+  describe 'DEFAULT_PROFILE_NAME' do
+    it "has no default profile name" do
+      expect(Browser::Safari::DEFAULT_PROFILE_NAME).to be_nil
     end
   end
 
   context "class methods" do
     subject{Browser::Safari}
 
-    describe ".bookmarks" do
-      it "returns nil for now" do
-        expect(subject.bookmarks).to be_nil
+    describe '.bookmarks_location' do
+      let(:expected_bookmarks_location){File.expand_path('~/Library/Safari/Bookmarks.plist')}
+
+      it "contains the correct bookmarks location" do
+        expect(subject.bookmarks_location).to eq(expected_bookmarks_location)
       end
     end
 
-    describe ".bookmarks_json" do
-      it "returns nil" do
-        expect(subject.bookmarks_json(bookmarks_fixtures_location)).to be_nil
-      end
-    end
+    describe '.history_location' do
+      let(:expected_history_location){File.expand_path('~/Library/Safari/History.db')}
 
-    describe ".bookmarks_location" do
-      context "WITHOUT arguments" do
-        let(:expected_bookmarks_location) do
-          File.expand_path(subject::BOOKMARKS_LOCATION)
-        end
-
-        it "returns an instance of String" do
-          expect(subject.bookmarks_location).to be_a(String)
-        end
-
-        it "returns the correct path" do
-          expect(subject.bookmarks_location).to eq(expected_bookmarks_location)
-        end
-      end
-
-      context "WITH arguments" do
-        it "returns an instance of String" do
-          expect(subject.bookmarks_location(bookmarks_location: bookmarks_fixtures_location)).to be_a(String)
-        end
-
-        it "returns the correct path" do
-          expect(subject.bookmarks_location(bookmarks_location: bookmarks_fixtures_location)).to eq(bookmarks_fixtures_location)
-        end
-      end
-    end
-
-    describe ".bookmarks_plist" do
-      it "is nil" do
-        expect(subject.bookmarks_plist).to be_nil
+      it "contains the correct history location" do
+        expect(subject.history_location).to eq(expected_history_location)
       end
     end
 
     describe ".bookmarks_sql" do
-      it "returns nil" do
-        expect(subject.bookmarks_sql).to be_nil
-      end
-    end
-
-    describe ".history_location" do
-      context "WITHOUT arguments" do
-        let(:expected_history_location) do
-          File.expand_path(subject::HISTORY_LOCATION)
-        end
-
-        it "returns an instance of String" do
-          expect(subject.history_location).to be_a(String)
-        end
-
-        it "returns the correct path" do
-          expect(subject.history_location).to eq(expected_history_location)
-        end
-      end
-
-      context "WITH arguments" do
-        it "returns an instance of String" do
-          expect(subject.history_location(history_location: history_fixtures_location)).to be_a(String)
-        end
-
-        it "returns the correct path" do
-          expect(subject.history_location(history_location: history_fixtures_location)).to eq(history_fixtures_location)
-        end
+      it "returns the bookmarks sql" do
+        expect(subject.send(:bookmarks_sql)).to be_nil
       end
     end
 
     describe ".history_sql" do
-      it "returns an instance of String" do
-        expect(subject.history_sql).to be_a(String)
-      end
-
       it "returns the history sql" do
-        expect(subject.history_sql).to eq(history_sql)
+        expect(subject.send(:history_sql)).to eq(expected_history_sql)
       end
     end
   end
 
   context "instance methods" do
-    subject{Browser.new(browser_name, bookmarks_location: bookmarks_fixtures_location, history_location: history_fixtures_location)}
+    subject{Browser::Safari.new(bookmarks_location: bookmarks_fixtures_location, history_location: history_fixtures_location)}
 
     let(:browser_name){'Safari'}
+    let(:expected_bookmarks){CFPropertyList.native_types(CFPropertyList::List.new(file: bookmarks_fixtures_location).value)}
+    let(:expected_history) do
+      [
+        {'id' => 1, 'url' => 'https://www.apple.com/', 'visit_time' => 780451200.0},
+        {'id' => 2, 'url' => 'https://support.apple.com/', 'visit_time' => 780450000.0},
+      ]
+    end
 
     describe "#initialize" do
       it "returns an instance of Browser" do
-        expect(subject).to be_a(Browser)
-      end
-
-      it "assigns @name" do
-        expect(subject.instance_variable_get(:@name)).to eq(browser_name)
+        expect(subject).to be_a(Browser::Safari)
       end
 
       it "assigns @bookmarks_location" do
@@ -152,41 +79,35 @@ describe Browser::Safari do
       it "assigns @history_location" do
         expect(subject.instance_variable_get(:@history_location)).to eq(history_fixtures_location)
       end
+
+      it "assigns no @profile_name" do
+        expect(subject.instance_variable_get(:@profile_name)).to be_nil
+      end
     end
 
     describe "#name" do
       it "returns name" do
-        expect(subject.name).to eq(browser_name)
+        expect(subject.send(:name)).to eq(browser_name)
       end
     end
 
     describe "#bookmarks" do
-      it "returns nil" do
-        expect(subject.bookmarks).to be_nil
+      it "returns an instance of Browser::Bookmarks" do
+        expect(subject.bookmarks).to be_a(Browser::Bookmarks)
+      end
+
+      it "returns the bookmarks as JSON" do
+        expect(subject.bookmarks.to_json).to eq(expected_bookmarks.to_json)
       end
     end
 
-    describe "#bookmarks_json" do
-      it "returns nil" do
-        expect(subject.bookmarks_json).to be_nil
+    describe "#history" do
+      it "returns an instance of Browser::History" do
+        expect(subject.history).to be_a(Browser::History)
       end
-    end
 
-    describe "#bookmarks_plist" do
-      it "returns nil" do
-        expect(subject.bookmarks_plist).to be_nil
-      end
-    end
-
-    describe "#bookmarks_sql" do
-      it "returns the bookmarks sql" do
-        expect(subject.bookmarks_sql).to be_nil
-      end
-    end
-
-    describe "#history_sql" do
-      it "returns the history sql" do
-        expect(subject.history_sql).to eq(history_sql)
+      it "returns the history" do
+        expect(subject.history.to_json).to eq(expected_history.to_json)
       end
     end
   end

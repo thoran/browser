@@ -3,7 +3,7 @@
 
 require 'date'
 require 'json'
-require 'plist'
+require 'cfpropertylist'
 require 'sqlite3'
 
 require 'Array/to_csv_row'
@@ -56,7 +56,9 @@ class Browser
 
     class Plist
       def render
-        Objects.new(@results).render.to_plist
+        list = CFPropertyList::List.new
+        list.value = CFPropertyList.guess(Objects.new(@results).render)
+        list.to_str(CFPropertyList::List::FORMAT_XML)
       end
 
       private
@@ -121,21 +123,21 @@ class Browser
     end
 
     def database
-      @database ||= SQLite3::Database.new(@browser_instance.class.history_location)
+      @database ||= SQLite3::Database.new(@browser_instance.history_location)
     end
 
     def results
       @results ||= (
-        column_names, *rows = database.execute2(@browser_instance.class.history_sql)
+        column_names, *rows = database.execute2(@browser_instance.class.send(:history_sql))
         [column_names, rows]
       )
     end
 
     def dump_filename(extension)
       if @browser_instance.profile_name
-        "#{@browser_instance.name.pascalcase}_#{@browser_instance.profile_name}_History_#{Date.today}.#{extension}"
+        "#{@browser_instance.send(:name).pascalcase}_#{@browser_instance.profile_name}_History_#{Date.today}.#{extension}"
       else
-        "#{@browser_instance.name.pascalcase}_History_#{Date.today}.#{extension}"
+        "#{@browser_instance.send(:name).pascalcase}_History_#{Date.today}.#{extension}"
       end
     end
   end

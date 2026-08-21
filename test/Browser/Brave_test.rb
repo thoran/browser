@@ -14,13 +14,13 @@ require 'Browser'
 
 describe Browser::Brave do
   let(:bookmarks_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Brave_bookmarks.json")}
-  let(:history_fixtures_location){'/path/to/history'}
+  let(:history_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/ChromiumBased_history.sqlite")}
   let(:expected_history_sql){'SELECT * FROM urls ORDER BY last_visit_time DESC;'}
 
   describe Browser::Brave::DEFAULT_PROFILE_NAME do
     let(:expected_default_profile_name){'Default'}
 
-    it "contains the correct history location" do
+    it "contains the correct default profile name" do
       expect(Browser::Brave::DEFAULT_PROFILE_NAME).to eq(expected_default_profile_name)
     end
   end
@@ -63,7 +63,12 @@ describe Browser::Brave do
     let(:browser_name){'Brave'}
     let(:default_profile_name){'Default'}
     let(:expected_bookmarks){JSON.parse(File.read(bookmarks_fixtures_location))}
-    let(:expected_history){JSON.parse(File.read(history_fixtures_location))}
+    let(:expected_history) do
+      [
+        {'id' => 1, 'url' => 'https://www.chromium.org/chromium-projects/', 'title' => 'Home', 'visit_count' => 3, 'typed_count' => 1, 'last_visit_time' => 13403232000000000, 'hidden' => 0},
+        {'id' => 2, 'url' => 'chrome://welcome/', 'title' => 'Welcome', 'visit_count' => 1, 'typed_count' => 0, 'last_visit_time' => 13403231000000000, 'hidden' => 0},
+      ]
+    end
 
     describe "#initialize" do
       it "returns an instance of Browser" do
@@ -95,7 +100,7 @@ describe Browser::Brave do
       end
 
       it "returns the bookmarks as JSON" do
-        expect(subject.bookmarks).to be_eq(expected_bookmarks.to_json)
+        expect(subject.bookmarks.to_json).to eq(expected_bookmarks.to_json)
       end
     end
 
@@ -105,7 +110,7 @@ describe Browser::Brave do
       end
 
       it "returns the history" do
-        expect(subject.history).to be_eq(expected_history.to_json)
+        expect(subject.history.to_json).to eq(expected_history.to_json)
       end
     end
   end
