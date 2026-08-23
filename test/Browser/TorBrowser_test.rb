@@ -14,8 +14,8 @@ require 'Browser'
 
 describe Browser::TorBrowser do
   let(:places_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/FirefoxBased_places.sqlite")}
-  let(:expected_bookmarks_sql){'SELECT * FROM moz_bookmarks ORDER BY ? DESC;'}
-  let(:expected_history_sql){'SELECT * FROM moz_historyvisits ORDER BY ? DESC;'}
+  let(:expected_bookmarks_sql){'SELECT moz_bookmarks.id, moz_places.url, moz_bookmarks.title, moz_bookmarks.dateAdded FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id WHERE moz_bookmarks.type = 1 ORDER BY moz_bookmarks.dateAdded DESC;'}
+  let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
 
   describe Browser::TorBrowser::DEFAULT_PROFILE_NAME do
     let(:expected_default_profile_name){'**'}
@@ -29,7 +29,7 @@ describe Browser::TorBrowser do
     subject{Browser::TorBrowser}
 
     describe '.bookmarks_location' do
-      let(:expected_bookmarks_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite')}
+      let(:expected_bookmarks_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Browser/**/places.sqlite')}
 
       it "contains the correct bookmarks location" do
         expect(subject.bookmarks_location).to eq(expected_bookmarks_location)
@@ -37,7 +37,7 @@ describe Browser::TorBrowser do
     end
 
     describe '.history_location' do
-      let(:expected_history_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Profiles/**/places.sqlite')}
+      let(:expected_history_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Browser/**/places.sqlite')}
 
       it "contains the correct history location" do
         expect(subject.history_location).to eq(expected_history_location)

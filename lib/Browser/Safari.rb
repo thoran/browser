@@ -8,14 +8,14 @@ class Browser
     DEFAULT_PROFILE_NAME = nil # Safari doesn't have profiles.
 
     class << self
-      def bookmarks_location(bookmarks_location: nil, profile_name: nil)
+      def bookmarks_location(profile_name: nil)
         profile_name ||= DEFAULT_PROFILE_NAME
-        File.expand_path(bookmarks_location || "#{root_path}/Bookmarks.plist")
+        File.expand_path("#{root_path}/Bookmarks.plist")
       end
 
-      def history_location(history_location: nil, profile_name: nil)
+      def history_location(profile_name: nil)
         profile_name ||= DEFAULT_PROFILE_NAME
-        File.expand_path(history_location || "#{root_path}/History.db")
+        File.expand_path("#{root_path}/History.db")
       end
 
       private

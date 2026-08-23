@@ -5,7 +5,7 @@ require_relative './Bookmarks'
 require_relative './History'
 
 class Browser
-  class Base
+  class Base < Browser
     attr_accessor\
       :bookmarks_location,
       :history_location,

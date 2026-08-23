@@ -2,51 +2,24 @@
 # Browser
 
 # 20260822
-# 0.6.1
+# 0.7.0
 
-# Changes since 0.5:
-# -/0: + Bookmarks
-# 1. + Browser::Bookmarks.from_json, .from_plist, .from_sqlite
-# 2. + Browser::Bookmarks: CSV, JSON, Plist, Objects, nested
-# 3. + Browser::Bookmarks#to_csv, #to_json, #to_plist, #to_objects
-# 4. + Browser::Bookmarks#dump(format), #dump_filename
-# 5. + Browser::History: the same four renderers, nested
-# 6. + Browser::History#to_json, #to_plist, #to_objects
-# 7. + Browser::Base#bookmarks, #history
-# 8. - Browser::Base.bookmarks, .bookmarks_json, .bookmarks_plist, .bookmarks_sql
-# 9. - Browser::Base.bookmarks_location, .history_location, .history_sql, .history
-# 10. - Browser::Base#history_sql
-# 11. ~ Browser::Base#initialize: + DEFAULT_PROFILE_NAME where none is given
-# 12. + ChromiumBased, FirefoxBased, Safari: root_path, profiles_path, private
-# 13. + ChromiumBased, FirefoxBased, Safari: .bookmarks_format, .history_format
-# 14. + ChromiumBased, FirefoxBased, Safari: DEFAULT_PROFILE_NAME, Default, ** and nil
-# 15. - ChromiumBased, FirefoxBased, Safari: .bookmarks, .bookmarks_json, .bookmarks_plist
-# 16. ~ Brave, Chrome, Chromium, Firefox, TorBrowser: root_path, in place of PROFILE_ROOT_PATH
-# 17. ~ Safari: root_path, in place of BOOKMARKS_LOCATION and HISTORY_LOCATION
-# 18. private throughout lib: 20 in 12 files, where there had been 2 in 2
-# 19. + browser.gemspec
-# 20. ~ Gemfile: gemspec, in place of the three gems listed
-# 21. ~ test/Browser/Brave_test.rb: converted to the reworked API
-# 22. ~ the other five tests: .bookmarks_location, .history_location, in place of PROFILE_ROOT_PATH
-# 23. ~ lib/Browser.rb: /Changes since 0.4/Changes since 0.5/
-# 24. ~ Browser#history: + a bookmarks location, both words misspelt
-# 0/1 (The 0.6.0 design made to run, and its tests brought up to it.)
-# 25. ~ Browser::Bookmarks, Browser::History: the location given was stored and ignored, in five places.
-# 26. ~ Browser::Bookmarks.from_json, .from_plist: JSON and Plist named the nested renderers.
-# 27. ~ Browser::Bookmarks.from_sqlite: opened the history database, ran the history query.
-# 28. ~ Browser::Bookmarks#to_objects: the instance where the class was meant.
-# 29. ~ browser.rb.gemspec: /plist/CFPropertyList/, plist reading XML alone, Safari writing binary.
-# 30. + lib/Browser/VERSION.rb, which the gemspec required and which was never there.
-# 31. + browser.rb.gemspec: sqlite3, required and undeclared, so a consumer met LoadError.
-# 32. ~ browser.rb.gemspec: /browser/browser.rb/, the shorter name taken.
-# 33. /browser.gemspec/browser.rb.gemspec/
-# 34. + Rakefile: the test task, and two building SQLite fixtures.
-# 35. + test/fixtures/ChromiumBased_history.sqlite, Safari_bookmarks.plist, Safari_history.sqlite
-# 36. ~ test/Browser/*_test.rb: converted from the pre-rework API.
-# 37. - Gemfile.lock, three years older than the gemspec, never resolved against it.
-# 38. - browser.rb.gemspec: spec.date, a release planned for 2025-09-27 which did not happen.
-# 39. ~ browser.rb.gemspec: /Ruby/MIT/; + LICENSE, in the files.
-# 40. + .gitignore: !test/fixtures/*.sqlite, data rather than build output.
+# Changes since 0.6:
+# -/0 (Settle how a browser is named and constructed.)
+# 1. - Browser, the delegating class, which called class methods removed in 0.6.
+# 2. + Browser.new(name): any case, returning an instance of that browser's class.
+# 3. ~ Browser::Base: < Browser, so that a browser is_a? Browser.
+# 4. /lib/TopLevelBrowser.rb/lib/browser-classes.rb/
+# 5. ~ browser-classes.rb: assigns rather than subclasses.
+# 6. - Browser::*.bookmarks_location, .history_location: the location arguments.
+# 7. ~ Browser::Base#initialize takes them instead.
+# 8. ~ Browser::FirefoxBased.bookmarks_sql, .history_sql: + the join to moz_places, which holds the url.
+# 9. ~ the same two: + a real column to order by.
+# 10. ~ Browser::TorBrowser.profiles_path: Browser rather than Firefox's Profiles.
+# 11. ~ Browser::Bookmarks#dump, Browser::History#dump: + filename:, + path:
+# 12. ~ the same two: return the path written, and write nothing when the render raises.
+# 13. - Browser::History#dump_filename: String#pascalcase, a no-op for every browser name.
+# 14. - lib/String/pascalcase.rb, which nothing else required.
 
 # History: I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
 # that I'd already written something of the sort for history called dump_browser_history_to_csv and that it
@@ -56,9 +29,6 @@
 # Todo:
 # 1. Add Opera support.
 # 2. Add Linux and Windows support.
-
-require 'Object/to_const'
-require 'String/pascalcase'
 
 class Browser
   LIST = %w{
@@ -77,59 +47,10 @@ Browser::LIST.each do |browser|
 end
 
 class Browser
-  attr_accessor :name
-  attr_accessor :bookmarks_location
-  attr_accessor :history_location
-  attr_accessor :profile_name
-
-  def initialize(name, options = {})
-    @name = name
-    @bookmarks_location = options[:bookmarks_location]
-    @history_location = options[:history_location]
-    @profile_name = options[:profile_name]
-  end
-
-  def bookmarks_location
-    @bookmarks_location || delegate_class.bookmarks_location(
-      profile_name: @profile_name,
-      bookmarks_location: @bookmarks_location
-    )
-  end
-
-  def history_location
-    @history_location || delegate_class.history_location(
-      profile_name: @profile_name,
-      history_location: @history_location
-    )
-  end
-
-  def bookmarks
-    delegate_class.bookmarks(bookmarks_location)
-  end
-
-  def bookmarks_json
-    delegate_class.bookmarks_json(bookmarks_location)
-  end
-
-  def bookmarks_plist
-    delegate_class.bookmarks_plist(bookmarks_location)
-  end
-
-  def bookmarks_sql
-    delegate_class.bookmarks_sql
-  end
-
-  def history_sql
-    delegate_class.history_sql
-  end
-
-  def history
-    delegate_class.history(boomarks_location: bookmakrk_location, history_location: history_location, profile_name: @profile_name)
-  end
-
-  private
-
-  def delegate_class
-    "Browser::#{@name.pascalcase}".to_const
+  def self.new(name = nil, **options)
+    return super(**options) unless self == Browser
+    browser_name = LIST.detect{|browser| browser.downcase == name.to_s.downcase.delete('_')}
+    raise ArgumentError, "Unknown browser: #{name.inspect}." unless browser_name
+    const_get(browser_name).new(**options)
   end
 end

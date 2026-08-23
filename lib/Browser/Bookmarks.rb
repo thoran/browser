@@ -7,7 +7,6 @@ require 'cfpropertylist'
 require 'sqlite3'
 
 require 'Array/to_csv_row'
-require 'String/pascalcase'
 
 class Browser
   class Bookmarks
@@ -115,10 +114,18 @@ class Browser
       end
     end
 
-    def dump(format = :csv)
-      dump_file = File.open(dump_filename(format), 'w')
-      dump_file << public_send("to_#{format}")
-      dump_file.close
+    def dump(format: :csv, filename: nil, path: '.')
+      full_path = (
+        if filename
+          filename.include?(File::SEPARATOR) ? filename : File.join(path, filename)
+        else
+          File.join(path, dump_filename(format))
+        end
+      )
+      File.write(full_path, public_send("to_#{format}"))
+      full_path
+    rescue Errno::ENOENT => e
+      raise "Cannot write to #{full_path}: #{e.message}"
     end
 
     private

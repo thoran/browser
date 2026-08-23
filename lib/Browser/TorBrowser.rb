@@ -11,6 +11,11 @@ class Browser
       def root_path
         "~/Library/Application Support/TorBrowser-Data"
       end
+
+      # Tor Browser keeps its profiles under Browser where Firefox uses Profiles.
+      def profiles_path
+        "#{root_path}/Browser"
+      end
     end
   end
 end

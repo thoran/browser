@@ -8,14 +8,14 @@ class Browser
     DEFAULT_PROFILE_NAME = "Default"
 
     class << self
-      def bookmarks_location(bookmarks_location: nil, profile_name: nil)
+      def bookmarks_location(profile_name: nil)
         profile_name ||= DEFAULT_PROFILE_NAME
-        File.expand_path(bookmarks_location || "#{profiles_path}/#{profile_name}/Bookmarks")
+        File.expand_path("#{profiles_path}/#{profile_name}/Bookmarks")
       end
 
-      def history_location(history_location: nil, profile_name: nil)
+      def history_location(profile_name: nil)
         profile_name ||= DEFAULT_PROFILE_NAME
-        File.expand_path(history_location || "#{profiles_path}/#{profile_name}/History")
+        File.expand_path("#{profiles_path}/#{profile_name}/History")
       end
 
       private
