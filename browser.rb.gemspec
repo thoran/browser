@@ -17,9 +17,9 @@ Gem::Specification.new do |spec|
 
   spec.files = [
     Dir['lib/**/*.rb'],
-    Dir['test/**/*.rb'],
+    Dir['test/**/*'],
     'browser.rb.gemspec',
-    'CHANGELOG.md',
+    'CHANGELOG',
     'Gemfile',
     'LICENSE',
     'Rakefile',

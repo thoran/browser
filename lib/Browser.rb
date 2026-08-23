@@ -2,18 +2,14 @@
 # Browser
 
 # 20260823
-# 0.8.0
+# 0.9.0
 
-# Changes since 0.7:
-# -/0 (Make reading trustworthy, and say so when it is not.)
-# 1. + lib/Browser/Unreadable.rb: Browser::Unreadable
-# 2. ~ Browser::Bookmarks#results, Browser::History#results: rescue IOError, SystemCallError, SQLite3::Exception into it.
-# 3. + Browser::Bookmarks#readable?, Browser::History#readable?
-# 4. + test/fixtures/FirefoxBased_places.sqlite
-# 5. + Rakefile: a task building it.
-# 6. ~ test/Browser/Firefox_test.rb, TorBrowser_test.rb
-# 7. + tests for #readable? and Browser::Unreadable
-# 8. ~ lib/Browser.rb: /Changes since 0.6/Changes since 0.7/
+# Changes since 0.8:
+# -/0 (+ CHANGELOG)
+# 1. + CHANGELOG, written by changelogger 0.13.0, and into every earlier revision with it.
+# 2. ~ browser.rb.gemspec: the test glob widened to Dir['test/**/*'], so the fixtures ship.
+# 3. ~ browser.rb.gemspec: /'CHANGELOG.md'/'CHANGELOG'/, the name the file has.
+# 4. ~ lib/Browser.rb: /Changes since 0.7/Changes since 0.8/
 
 # History: I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
 # that I'd already written something of the sort for history called dump_browser_history_to_csv and that it
