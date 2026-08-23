@@ -10,6 +10,9 @@ require 'rspec/expectations/minitest_integration'
 lib_dir = File.expand_path(File.join(__FILE__, '..', '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
+require 'fileutils'
+require 'tmpdir'
+
 require 'Browser'
 
 describe Browser::Firefox do
@@ -62,6 +65,19 @@ describe Browser::Firefox do
 
     let(:browser_name){'Firefox'}
     let(:default_profile_name){'**'}
+    let(:expected_bookmarks) do
+      [
+        {'id' => 11, 'url' => 'https://www.mozilla.org/about/', 'title' => 'About Us', 'dateAdded' => 1787449000000011},
+        {'id' => 10, 'url' => 'https://www.mozilla.org/contribute/', 'title' => 'Get Involved', 'dateAdded' => 1787449000000010},
+        {'id' => 9, 'url' => 'https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars', 'title' => 'Customize Firefox', 'dateAdded' => 1787449000000009},
+        {'id' => 8, 'url' => 'https://support.mozilla.org/products/firefox', 'title' => 'Get Help', 'dateAdded' => 1787449000000008},
+      ]
+    end
+    let(:expected_history) do
+      [
+        {'id' => 1, 'url' => 'https://addons.mozilla.org/en-US/firefox/', 'title' => 'Extension Starter Pack', 'visit_date' => 1787449152741667},
+      ]
+    end
 
     describe "#initialize" do
       it "returns an instance of Browser" do
@@ -91,11 +107,55 @@ describe Browser::Firefox do
       it "returns an instance of Browser::Bookmarks" do
         expect(subject.bookmarks).to be_a(Browser::Bookmarks)
       end
+
+      it "returns the bookmarks" do
+        expect(subject.bookmarks.to_json).to eq(expected_bookmarks.to_json)
+      end
     end
 
     describe "#history" do
       it "returns an instance of Browser::History" do
         expect(subject.history).to be_a(Browser::History)
+      end
+
+      it "returns the history" do
+        expect(subject.history.to_json).to eq(expected_history.to_json)
+      end
+    end
+
+    describe "#readable?" do
+      it "is true when the data is there" do
+        expect(subject.bookmarks.readable?).to be(true)
+        expect(subject.history.readable?).to be(true)
+      end
+    end
+
+    context "WHEN the data is not there" do
+      subject{Browser::Firefox.new(bookmarks_location: '/nonexistent/file', history_location: '/nonexistent/file')}
+
+      it "is not readable" do
+        expect(subject.bookmarks.readable?).to be(false)
+        expect(subject.history.readable?).to be(false)
+      end
+
+      it "raises Browser::Unreadable" do
+        expect{subject.bookmarks.to_json}.to raise_error(Browser::Unreadable)
+        expect{subject.history.to_json}.to raise_error(Browser::Unreadable)
+      end
+    end
+
+    context "WHEN the database is locked, as it is while the browser runs" do
+      it "is not readable" do
+        Dir.mktmpdir do |directory|
+          path = File.join(directory, 'places.sqlite')
+          FileUtils.cp(places_fixtures_location, path)
+          locker = SQLite3::Database.new(path)
+          locker.execute('BEGIN EXCLUSIVE')
+          browser = Browser::Firefox.new(bookmarks_location: path, history_location: path)
+          expect(browser.bookmarks.readable?).to be(false)
+          expect{browser.history.to_json}.to raise_error(Browser::Unreadable)
+          locker.close
+        end
       end
     end
   end

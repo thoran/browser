@@ -8,6 +8,8 @@ require 'sqlite3'
 
 require 'Array/to_csv_row'
 
+require_relative './Unreadable'
+
 class Browser
   class Bookmarks
     class CSV
@@ -128,6 +130,13 @@ class Browser
       raise "Cannot write to #{full_path}: #{e.message}"
     end
 
+    def readable?
+      results
+      true
+    rescue Browser::Unreadable
+      false
+    end
+
     private
 
     def initialize(browser_instance)
@@ -136,6 +145,8 @@ class Browser
 
     def results
       @results ||= self.class.public_send("from_#{@browser_instance.class.send(:bookmarks_format)}", @browser_instance)
+    rescue IOError, SystemCallError, SQLite3::Exception => e
+      raise Browser::Unreadable, "#{@browser_instance.bookmarks_location} is not readable: #{e.message}"
     end
 
     def dump_filename(extension)

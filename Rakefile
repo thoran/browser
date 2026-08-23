@@ -38,6 +38,85 @@ namespace :fixtures do
     puts "Wrote #{path} (#{File.size(path)} bytes)."
   end
 
+  desc "Build test/fixtures/FirefoxBased_places.sqlite"
+  task :firefox_based_places do
+    require 'fileutils'
+    require 'sqlite3'
+    path = File.join(__dir__, 'test/fixtures/FirefoxBased_places.sqlite')
+    FileUtils.rm_f(path)
+    db = SQLite3::Database.new(path)
+    # moz_places, moz_bookmarks and moz_historyvisits as Firefox creates them.  A
+    # bookmark's label is moz_bookmarks.title; moz_places.title is the page's own, and
+    # is empty until the page has been visited.
+    db.execute_batch(<<~SQL)
+      CREATE TABLE moz_origins (
+        id INTEGER PRIMARY KEY, prefix TEXT NOT NULL, host TEXT NOT NULL,
+        frecency INTEGER NOT NULL, recalc_frecency INTEGER NOT NULL DEFAULT 0,
+        alt_frecency INTEGER, recalc_alt_frecency INTEGER NOT NULL DEFAULT 0,
+        block_until_ms INTEGER, block_pages_until_ms INTEGER, UNIQUE (prefix, host)
+      );
+      CREATE TABLE moz_places (
+        id INTEGER PRIMARY KEY, url LONGVARCHAR, title LONGVARCHAR,
+        rev_host LONGVARCHAR, visit_count INTEGER DEFAULT 0,
+        hidden INTEGER DEFAULT 0 NOT NULL, typed INTEGER DEFAULT 0 NOT NULL,
+        frecency INTEGER DEFAULT -1 NOT NULL, last_visit_date INTEGER, guid TEXT,
+        foreign_count INTEGER DEFAULT 0 NOT NULL, url_hash INTEGER DEFAULT 0 NOT NULL,
+        description TEXT, preview_image_url TEXT, site_name TEXT,
+        origin_id INTEGER REFERENCES moz_origins(id),
+        recalc_frecency INTEGER NOT NULL DEFAULT 0, alt_frecency INTEGER,
+        recalc_alt_frecency INTEGER NOT NULL DEFAULT 0
+      );
+      CREATE TABLE moz_bookmarks (
+        id INTEGER PRIMARY KEY, type INTEGER, fk INTEGER DEFAULT NULL,
+        parent INTEGER, position INTEGER, title LONGVARCHAR, keyword_id INTEGER,
+        folder_type TEXT, dateAdded INTEGER, lastModified INTEGER, guid TEXT,
+        syncStatus INTEGER NOT NULL DEFAULT 0, syncChangeCounter INTEGER NOT NULL DEFAULT 1
+      );
+      CREATE TABLE moz_historyvisits (
+        id INTEGER PRIMARY KEY, from_visit INTEGER, place_id INTEGER,
+        visit_date INTEGER, visit_type INTEGER, session INTEGER,
+        source INTEGER DEFAULT 0 NOT NULL, triggeringPlaceId INTEGER
+      );
+    SQL
+
+    # dateAdded and visit_date are microseconds since 1970-01-01, which is Firefox's epoch.
+    added = 1787449000000000
+
+    [
+      [1, 'https://support.mozilla.org/products/firefox', nil, 'gro.allizom.troppus.'],
+      [2, 'https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars', nil, 'gro.allizom.troppus.'],
+      [3, 'https://www.mozilla.org/contribute/', nil, 'gro.allizom.www.'],
+      [4, 'https://www.mozilla.org/about/', nil, 'gro.allizom.www.'],
+      [5, 'https://addons.mozilla.org/en-US/firefox/', 'Extension Starter Pack', 'gro.allizom.snodda.'],
+    ].each do |id, url, title, rev_host|
+      db.execute('INSERT INTO moz_places (id, url, title, rev_host) VALUES (?, ?, ?, ?)', [id, url, title, rev_host])
+    end
+
+    # type 2 is a folder, type 1 a bookmark.  The roots are fixed ids with padded guids.
+    [
+      [1, 2, nil, 0, 0, nil, 'root________'],
+      [2, 2, nil, 1, 0, 'menu', 'menu________'],
+      [3, 2, nil, 1, 1, 'toolbar', 'toolbar_____'],
+      [4, 2, nil, 1, 2, 'tags', 'tags________'],
+      [5, 2, nil, 1, 3, 'unfiled', 'unfiled_____'],
+      [6, 2, nil, 1, 4, 'mobile', 'mobile______'],
+      [7, 2, nil, 2, 0, 'Mozilla Firefox', 'j47T12MG8hux'],
+      [8, 1, 1, 7, 0, 'Get Help', '50OxxDFUahwc'],
+      [9, 1, 2, 7, 1, 'Customize Firefox', 'dTBx_Z-u_6U6'],
+      [10, 1, 3, 7, 2, 'Get Involved', 'l00bhg3kKbYX'],
+      [11, 1, 4, 7, 3, 'About Us', 'pJ9IZ7ivzMw6'],
+    ].each do |id, type, fk, parent, position, title, guid|
+      db.execute(
+        'INSERT INTO moz_bookmarks (id, type, fk, parent, position, title, dateAdded, lastModified, guid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [id, type, fk, parent, position, title, added + id, added + id, guid]
+      )
+    end
+
+    db.execute('INSERT INTO moz_historyvisits (id, place_id, visit_date, visit_type) VALUES (?, ?, ?, ?)', [1, 5, added + 152741667, 1])
+    db.close
+    puts "Wrote #{path} (#{File.size(path)} bytes)."
+  end
+
   desc "Build test/fixtures/Safari_history.sqlite"
   task :safari_history do
     require 'fileutils'

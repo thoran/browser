@@ -62,6 +62,19 @@ describe Browser::TorBrowser do
 
     let(:browser_name){'TorBrowser'}
     let(:default_profile_name){'**'}
+    let(:expected_bookmarks) do
+      [
+        {'id' => 11, 'url' => 'https://www.mozilla.org/about/', 'title' => 'About Us', 'dateAdded' => 1787449000000011},
+        {'id' => 10, 'url' => 'https://www.mozilla.org/contribute/', 'title' => 'Get Involved', 'dateAdded' => 1787449000000010},
+        {'id' => 9, 'url' => 'https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars', 'title' => 'Customize Firefox', 'dateAdded' => 1787449000000009},
+        {'id' => 8, 'url' => 'https://support.mozilla.org/products/firefox', 'title' => 'Get Help', 'dateAdded' => 1787449000000008},
+      ]
+    end
+    let(:expected_history) do
+      [
+        {'id' => 1, 'url' => 'https://addons.mozilla.org/en-US/firefox/', 'title' => 'Extension Starter Pack', 'visit_date' => 1787449152741667},
+      ]
+    end
 
     describe "#initialize" do
       it "returns an instance of Browser" do
@@ -91,11 +104,40 @@ describe Browser::TorBrowser do
       it "returns an instance of Browser::Bookmarks" do
         expect(subject.bookmarks).to be_a(Browser::Bookmarks)
       end
+
+      it "returns the bookmarks" do
+        expect(subject.bookmarks.to_json).to eq(expected_bookmarks.to_json)
+      end
     end
 
     describe "#history" do
       it "returns an instance of Browser::History" do
         expect(subject.history).to be_a(Browser::History)
+      end
+
+      it "returns the history" do
+        expect(subject.history.to_json).to eq(expected_history.to_json)
+      end
+    end
+
+    describe "#readable?" do
+      it "is true when the data is there" do
+        expect(subject.bookmarks.readable?).to be(true)
+        expect(subject.history.readable?).to be(true)
+      end
+    end
+
+    context "WHEN the data is not there" do
+      subject{Browser::TorBrowser.new(bookmarks_location: '/nonexistent/file', history_location: '/nonexistent/file')}
+
+      it "is not readable" do
+        expect(subject.bookmarks.readable?).to be(false)
+        expect(subject.history.readable?).to be(false)
+      end
+
+      it "raises Browser::Unreadable" do
+        expect{subject.bookmarks.to_json}.to raise_error(Browser::Unreadable)
+        expect{subject.history.to_json}.to raise_error(Browser::Unreadable)
       end
     end
   end

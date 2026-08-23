@@ -8,6 +8,8 @@ require 'sqlite3'
 
 require 'Array/to_csv_row'
 
+require_relative './Unreadable'
+
 class Browser
   class History
     class CSV
@@ -123,6 +125,13 @@ class Browser
       raise "Cannot write to #{full_path}: #{e.message}"
     end
 
+    def readable?
+      results
+      true
+    rescue Browser::Unreadable
+      false
+    end
+
     private
 
     def initialize(browser_instance)
@@ -138,6 +147,8 @@ class Browser
         column_names, *rows = database.execute2(@browser_instance.class.send(:history_sql))
         [column_names, rows]
       )
+    rescue IOError, SystemCallError, SQLite3::Exception => e
+      raise Browser::Unreadable, "#{@browser_instance.history_location} is not readable: #{e.message}"
     end
 
     def dump_filename(extension)

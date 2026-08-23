@@ -1,25 +1,19 @@
 # Browser.rb
 # Browser
 
-# 20260822
-# 0.7.0
+# 20260823
+# 0.8.0
 
-# Changes since 0.6:
-# -/0 (Settle how a browser is named and constructed.)
-# 1. - Browser, the delegating class, which called class methods removed in 0.6.
-# 2. + Browser.new(name): any case, returning an instance of that browser's class.
-# 3. ~ Browser::Base: < Browser, so that a browser is_a? Browser.
-# 4. /lib/TopLevelBrowser.rb/lib/browser-classes.rb/
-# 5. ~ browser-classes.rb: assigns rather than subclasses.
-# 6. - Browser::*.bookmarks_location, .history_location: the location arguments.
-# 7. ~ Browser::Base#initialize takes them instead.
-# 8. ~ Browser::FirefoxBased.bookmarks_sql, .history_sql: + the join to moz_places, which holds the url.
-# 9. ~ the same two: + a real column to order by.
-# 10. ~ Browser::TorBrowser.profiles_path: Browser rather than Firefox's Profiles.
-# 11. ~ Browser::Bookmarks#dump, Browser::History#dump: + filename:, + path:
-# 12. ~ the same two: return the path written, and write nothing when the render raises.
-# 13. - Browser::History#dump_filename: String#pascalcase, a no-op for every browser name.
-# 14. - lib/String/pascalcase.rb, which nothing else required.
+# Changes since 0.7:
+# -/0 (Make reading trustworthy, and say so when it is not.)
+# 1. + lib/Browser/Unreadable.rb: Browser::Unreadable
+# 2. ~ Browser::Bookmarks#results, Browser::History#results: rescue IOError, SystemCallError, SQLite3::Exception into it.
+# 3. + Browser::Bookmarks#readable?, Browser::History#readable?
+# 4. + test/fixtures/FirefoxBased_places.sqlite
+# 5. + Rakefile: a task building it.
+# 6. ~ test/Browser/Firefox_test.rb, TorBrowser_test.rb
+# 7. + tests for #readable? and Browser::Unreadable
+# 8. ~ lib/Browser.rb: /Changes since 0.6/Changes since 0.7/
 
 # History: I realised when wanting to dump all bookmarks from any browsers on one machine for import to another
 # that I'd already written something of the sort for history called dump_browser_history_to_csv and that it

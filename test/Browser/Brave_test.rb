@@ -113,5 +113,26 @@ describe Browser::Brave do
         expect(subject.history.to_json).to eq(expected_history.to_json)
       end
     end
+
+    describe "#readable?" do
+      it "is true when the data is there" do
+        expect(subject.bookmarks.readable?).to be(true)
+        expect(subject.history.readable?).to be(true)
+      end
+    end
+
+    context "WHEN the data is not there" do
+      subject{Browser::Brave.new(bookmarks_location: '/nonexistent/file', history_location: '/nonexistent/file')}
+
+      it "is not readable" do
+        expect(subject.bookmarks.readable?).to be(false)
+        expect(subject.history.readable?).to be(false)
+      end
+
+      it "raises Browser::Unreadable" do
+        expect{subject.bookmarks.to_json}.to raise_error(Browser::Unreadable)
+        expect{subject.history.to_json}.to raise_error(Browser::Unreadable)
+      end
+    end
   end
 end
