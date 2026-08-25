@@ -2,7 +2,7 @@
 
 # Instead of writing Browser::Brave.new or Browser.new(:brave), write Brave.new.
 
-require_relative './Browser'
+require_relative './browser'
 
 Brave      = Browser::Brave
 Chrome     = Browser::Chrome

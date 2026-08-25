@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 20260825
+
+0.10.0: + Browser::Bookmark, the internal representation, and a lowercase load file.
+
+1. + lib/Browser/Bookmark.rb: a bookmark which holds bookmarks; a folder has children, a leaf a url.
+2. ~ Browser::Bookmarks.from_json, .from_plist, .from_sqlite: a Browser::Bookmark tree, in place of the raw parse.
+3. ~ the same three: Chromium's and Safari's trees carry their folders.
+4. ~ Browser::Bookmarks.from_plist: the History proxy skipped, and a leaf sitting at the top level taken.
+5. ~ Browser::Bookmarks.from_sqlite: Firefox and Tor Browser flat still, the query fetching leaves alone.
+6. ~ Browser::Bookmarks#to_objects: the tree flattened to title, url and folder, which the three renderers take.
+7. ~ Browser::Bookmarks#to_csv: it had matched symbol keys against a string-keyed hash, so every row was empty commas.
+8. - Browser::Bookmarks::Objects, which the flatten replaced.
+9. - Browser::Bookmarks: require 'Array/to_csv_row', which nothing there used.
+10. /lib/Browser.rb/lib/browser.rb/, /test/Browser_test.rb/test/browser_test.rb/, require 'Browser' --> require 'browser'.
+11. The uppercase name folded together with the browser gem on a case-insensitive filesystem.
+12. ~ lib/browser.rb: - the header's version and Changes block, VERSION.rb and this CHANGELOG being the one of each.
+13. + test/Browser/Bookmark_test.rb
+14. ~ test/Browser/*_test.rb: #bookmarks checked through to_objects, in place of a raw round-trip.
+15. ~ Browser::VERSION: /0.9.0/0.10.0/
+
+
 ## 20260823
 
 0.9.0: + CHANGELOG

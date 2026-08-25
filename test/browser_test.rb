@@ -10,7 +10,7 @@ require 'rspec/expectations/minitest_integration'
 lib_dir = File.expand_path(File.join(__FILE__, '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
-require 'Browser'
+require 'browser'
 
 describe Browser do
   describe Browser::LIST do

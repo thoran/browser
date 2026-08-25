@@ -10,7 +10,7 @@ require 'rspec/expectations/minitest_integration'
 lib_dir = File.expand_path(File.join(__FILE__, '..', '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
-require 'Browser'
+require 'browser'
 
 describe Browser::Safari do
   let(:bookmarks_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Safari_bookmarks.plist")}
@@ -59,7 +59,6 @@ describe Browser::Safari do
     subject{Browser::Safari.new(bookmarks_location: bookmarks_fixtures_location, history_location: history_fixtures_location)}
 
     let(:browser_name){'Safari'}
-    let(:expected_bookmarks){CFPropertyList.native_types(CFPropertyList::List.new(file: bookmarks_fixtures_location).value)}
     let(:expected_history) do
       [
         {'id' => 1, 'url' => 'https://www.apple.com/', 'visit_time' => 780451200.0},
@@ -91,13 +90,31 @@ describe Browser::Safari do
       end
     end
 
+    let(:expected_bookmarks) do
+      [
+        {title: 'Apple', url: 'https://www.apple.com/', folder: 'BookmarksBar'},
+        {title: 'iCloud', url: 'https://www.icloud.com/', folder: 'BookmarksBar'},
+        {title: 'Yahoo', url: 'https://www.yahoo.com/', folder: 'BookmarksBar'},
+        {title: 'Bing', url: 'https://www.bing.com/', folder: 'BookmarksBar'},
+        {title: 'Google', url: 'https://www.google.com/?client=safari&channel=mac_bm', folder: 'BookmarksBar'},
+        {title: 'Wikipedia', url: 'https://www.wikipedia.org/', folder: 'BookmarksBar'},
+        {title: 'Facebook', url: 'https://www.facebook.com/', folder: 'BookmarksBar'},
+        {title: 'Twitter', url: 'https://twitter.com/', folder: 'BookmarksBar'},
+        {title: 'LinkedIn', url: 'https://www.linkedin.com/', folder: 'BookmarksBar'},
+        {title: 'The Weather Channel', url: 'https://www.weather.com/', folder: 'BookmarksBar'},
+        {title: 'Yelp', url: 'https://www.yelp.com/', folder: 'BookmarksBar'},
+        {title: 'TripAdvisor', url: 'https://www.tripadvisor.com/', folder: 'BookmarksBar'},
+        {title: 'Home \ Anthropic', url: 'https://www.anthropic.com/', folder: ''},
+      ]
+    end
+
     describe "#bookmarks" do
       it "returns an instance of Browser::Bookmarks" do
         expect(subject.bookmarks).to be_a(Browser::Bookmarks)
       end
 
-      it "returns the bookmarks as JSON" do
-        expect(subject.bookmarks.to_json).to eq(expected_bookmarks.to_json)
+      it "returns the bookmarks" do
+        expect(subject.bookmarks.to_objects).to eq(expected_bookmarks)
       end
     end
 

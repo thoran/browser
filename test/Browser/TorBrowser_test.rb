@@ -10,7 +10,7 @@ require 'rspec/expectations/minitest_integration'
 lib_dir = File.expand_path(File.join(__FILE__, '..', '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
-require 'Browser'
+require 'browser'
 
 describe Browser::TorBrowser do
   let(:places_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/FirefoxBased_places.sqlite")}
@@ -62,14 +62,6 @@ describe Browser::TorBrowser do
 
     let(:browser_name){'TorBrowser'}
     let(:default_profile_name){'**'}
-    let(:expected_bookmarks) do
-      [
-        {'id' => 11, 'url' => 'https://www.mozilla.org/about/', 'title' => 'About Us', 'dateAdded' => 1787449000000011},
-        {'id' => 10, 'url' => 'https://www.mozilla.org/contribute/', 'title' => 'Get Involved', 'dateAdded' => 1787449000000010},
-        {'id' => 9, 'url' => 'https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars', 'title' => 'Customize Firefox', 'dateAdded' => 1787449000000009},
-        {'id' => 8, 'url' => 'https://support.mozilla.org/products/firefox', 'title' => 'Get Help', 'dateAdded' => 1787449000000008},
-      ]
-    end
     let(:expected_history) do
       [
         {'id' => 1, 'url' => 'https://addons.mozilla.org/en-US/firefox/', 'title' => 'Extension Starter Pack', 'visit_date' => 1787449152741667},
@@ -100,13 +92,22 @@ describe Browser::TorBrowser do
       end
     end
 
+    let(:expected_bookmarks) do
+      [
+        {title: 'About Us', url: 'https://www.mozilla.org/about/', folder: ''},
+        {title: 'Get Involved', url: 'https://www.mozilla.org/contribute/', folder: ''},
+        {title: 'Customize Firefox', url: 'https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars', folder: ''},
+        {title: 'Get Help', url: 'https://support.mozilla.org/products/firefox', folder: ''},
+      ]
+    end
+
     describe "#bookmarks" do
       it "returns an instance of Browser::Bookmarks" do
         expect(subject.bookmarks).to be_a(Browser::Bookmarks)
       end
 
       it "returns the bookmarks" do
-        expect(subject.bookmarks.to_json).to eq(expected_bookmarks.to_json)
+        expect(subject.bookmarks.to_objects).to eq(expected_bookmarks)
       end
     end
 

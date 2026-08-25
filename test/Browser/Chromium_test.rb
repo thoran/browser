@@ -10,7 +10,7 @@ require 'rspec/expectations/minitest_integration'
 lib_dir = File.expand_path(File.join(__FILE__, '..', '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
-require 'Browser'
+require 'browser'
 
 describe Browser::Chromium do
   let(:bookmarks_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Chromium_bookmarks.json")}
@@ -62,7 +62,6 @@ describe Browser::Chromium do
 
     let(:browser_name){'Chromium'}
     let(:default_profile_name){'Default'}
-    let(:expected_bookmarks){JSON.parse(File.read(bookmarks_fixtures_location))}
     let(:expected_history) do
       [
         {'id' => 1, 'url' => 'https://www.chromium.org/chromium-projects/', 'title' => 'Home', 'visit_count' => 3, 'typed_count' => 1, 'last_visit_time' => 13403232000000000, 'hidden' => 0},
@@ -94,13 +93,19 @@ describe Browser::Chromium do
       end
     end
 
+    let(:expected_bookmarks) do
+      [
+        {title: 'Home', url: 'https://www.chromium.org/chromium-projects/', folder: 'Bookmarks Bar'},
+      ]
+    end
+
     describe "#bookmarks" do
       it "returns an instance of Browser::Bookmarks" do
         expect(subject.bookmarks).to be_a(Browser::Bookmarks)
       end
 
-      it "returns the bookmarks as JSON" do
-        expect(subject.bookmarks.to_json).to eq(expected_bookmarks.to_json)
+      it "returns the bookmarks" do
+        expect(subject.bookmarks.to_objects).to eq(expected_bookmarks)
       end
     end
 
