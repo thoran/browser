@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 20260904
+
+0.10.1: Ship String#ascii_only, so the gem loads without a RUBYLIB.
+
+1. + lib/String/ascii_only.rb, required by Array#to_csv_row and resolved until now from ~/lib/ruby alone.
+2. Requiring Browser::History therefore raised LoadError on any machine but the author's.
+3. ~ Browser::VERSION: /0.10.0/0.10.1/
+
+
 ## 20260825
 
 0.10.0: + Browser::Bookmark, the internal representation, and a lowercase load file.
