@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 20260907
+
+0.11.0: + README.md
+
+1. + README.md
+2. ~ the Tor Browser caveat, corrected before it went in: it had said the library follows the install, where root_path is one fixed path.
+3. It now says where the library looks, and that an install elsewhere wants bookmarks_location: and history_location:.
+4. ~ browser.rb.gemspec: homepage, /browser.rb/browser/ and https, as http.rb's repository is http.
+5. ~ README.md: the fork link, the same.
+6. ~ Browser::VERSION: /0.10.1/0.11.0/
+
+
 ## 20260904
 
 0.10.1: Ship String#ascii_only, so the gem loads without a RUBYLIB.

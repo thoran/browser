@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.author = 'thoran'
   spec.email = 'code@thoran.com'
-  spec.homepage = 'http://github.com/thoran/browser.rb'
+  spec.homepage = 'https://github.com/thoran/browser'
   spec.license = 'MIT'
 
   spec.required_ruby_version = '>= 2.7'
