@@ -1,8 +1,19 @@
+# browser.rb.gemspec
+
 require_relative './lib/Browser/VERSION'
+
+class Gem::Specification
+  def dependencies=(gems)
+    gems.each{|gem| add_dependency(*gem)}
+  end
+
+  def development_dependencies=(gems)
+    gems.each{|gem| add_development_dependency(*gem)}
+  end
+end
 
 Gem::Specification.new do |spec|
   spec.name = 'browser.rb'
-
   spec.version = Browser::VERSION
 
   spec.summary = "Read and write web browser generated files with Ruby."
@@ -14,25 +25,29 @@ Gem::Specification.new do |spec|
   spec.license = 'MIT'
 
   spec.required_ruby_version = '>= 2.7'
+  spec.require_paths = ['lib']
 
   spec.files = [
+    'browser.rb.gemspec',
     Dir['lib/**/*.rb'],
     Dir['test/**/*'],
-    'browser.rb.gemspec',
     'CHANGELOG',
     'Gemfile',
     'LICENSE',
     'Rakefile',
     'README.md',
   ].flatten
-  spec.require_paths = ['lib']
 
-  spec.add_dependency('CFPropertyList')
-  spec.add_dependency('json')
-  spec.add_dependency('sqlite3')
+  spec.dependencies = %w{
+    CFPropertyList
+    json
+    sqlite3
+  }
 
-  spec.add_development_dependency('minitest')
-  spec.add_development_dependency('rake')
-  spec.add_development_dependency('minitest-spec-context')
-  spec.add_development_dependency('rspec-expectations')
+  spec.development_dependencies = %w{
+    minitest
+    rake
+    minitest-spec-context
+    rspec-expectations
+  }
 end

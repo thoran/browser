@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 20260908
+
+0.11.1: ~ browser.rb.gemspec, brought into line with the others.
+
+1. ~ browser.rb.gemspec: + the header line naming the file.
+2. ~ the same: + #dependencies= and #development_dependencies=, the gems as words, in place of an add_dependency line apiece.
+3. ~ the same: require_paths beside required_ruby_version, rather than after the files.
+4. ~ the same: the gemspec first among the files.
+5. ~ Browser::VERSION: /0.11.0/0.11.1/
+
+
 ## 20260907
 
 0.11.0: + README.md
