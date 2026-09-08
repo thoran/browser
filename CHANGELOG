@@ -1,6 +1,31 @@
 # CHANGELOG
 
+## Capabilities, and when each arrived
+
+| capability | version | date |
+|---|---|---|
+| The six browsers named, with their data locations: Brave, Chrome, Chromium, Firefox, Safari, Tor Browser | 0.0.0 | 2022-06-22 |
+| Bookmarks and history locations as methods on each browser | 0.1.0 | 2022-12-03 |
+| One class per file; top-level names for a program that wants `Chrome` rather than `Browser::Chrome` | 0.3.0 | 2023-01-02 |
+| History read from SQLite, rendered to CSV, written to a dated file | 0.4.0 | 2023-01-02 |
+| A profile name selects the locations, and appears in the dumped filename | 0.5.0, 0.5.2 | 2023-09-23, 2023-09-24 |
+| Bookmarks read: JSON for the Chromium family, plist for Safari, SQLite for the Firefox family | 0.6.0, running from 0.6.1 | 2025-09-25, 2026-08-22 |
+| Four renderers for both bookmarks and history: CSV, JSON, plist, objects; `dump` takes a format | 0.6.0, running from 0.6.1 | 2025-09-25, 2026-08-22 |
+| Safari's binary plist read natively, via CFPropertyList | 0.6.1 | 2026-08-22 |
+| A gem: gemspec at 0.6.0, loading from 0.6.1, standing alone without RUBYLIB from 0.10.1 | 0.6.0 to 0.10.1 | 2025-09-25 to 2026-09-04 |
+| `Browser.new(:name)`, any case, string or symbol; `browser-classes` for the top-level names | 0.7.0 | 2026-08-23 |
+| `dump(format:, filename:, path:)` returns the path written and writes nothing if the render fails | 0.7.0 | 2026-08-23 |
+| `readable?`, and `Browser::Unreadable` for data that is absent or locked by a running browser | 0.8.0 | 2026-08-23 |
+| `Browser::Bookmark`, a tree; folders carried; `to_objects` flattens to title, url, folder; all renderers uniform across browsers | 0.10.0 | 2026-08-25 |
+| CHANGELOG, README, MIT licence and LICENSE file | 0.9.0, 0.11.0, 0.6.1 | 2026-08-23, 2026-09-07, 2026-08-22 |
+
+
 ## 20260908
+
+0.11.2: + Capabilities, and when each arrived, at the head of the CHANGELOG.
+
+1. ~ CHANGELOG: + Capabilities, and when each arrived, at the head.
+2. ~ Browser::VERSION: /0.11.1/0.11.2/
 
 0.11.1: ~ browser.rb.gemspec, brought into line with the others.
 
