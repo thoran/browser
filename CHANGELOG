@@ -18,6 +18,25 @@
 | `readable?`, and `Browser::Unreadable` for data that is absent or locked by a running browser | 0.8.0 | 2026-08-23 |
 | `Browser::Bookmark`, a tree; folders carried; `to_objects` flattens to title, url, folder; all renderers uniform across browsers | 0.10.0 | 2026-08-25 |
 | CHANGELOG, README, MIT licence and LICENSE file | 0.9.0, 0.11.0, 0.6.1 | 2026-08-23, 2026-09-07, 2026-08-22 |
+| One set of renderers, shared by bookmarks and history | 0.12.0 | 2026-09-09 |
+
+
+## 20260909
+
+0.12.0: + Browser::Rendering, the renderers once, shared by Bookmarks and History.
+
+1. + lib/Browser/Rendering.rb: the CSV, JSON and Plist renderers, over records and their column names.
+2. ~ the same: + to_csv, to_json, to_plist, dump and readable?.
+3. Bookmarks and History include it, each supplying results, to_objects and column_names.
+4. - Browser::Bookmarks::CSV, ::JSON, ::Plist; - Browser::History::CSV, ::JSON, ::Plist, ::Objects: the two sets it replaces.
+5. They had drifted: History's unpacked the column names and rows in each renderer and went through Objects for records, and Bookmarks' CSV wrote its three fields unquoted.
+6. ~ Browser::History#to_objects: the records made once, and what the renderers take.
+7. ~ Browser::History#results: memoises the query as it came.
+8. ~ Browser::Bookmarks#to_csv: every field quoted, as History's have been.
+9. The other 21 renderings across the three fixtures are byte for byte what they were.
+10. ~ Browser::Rendering#dump_filename: the parts joined, a nil profile dropping out, in place of two interpolations.
+11. + test/Browser/Rendering_test.rb
+12. ~ Browser::VERSION: /0.11.2/0.12.0/
 
 
 ## 20260908
