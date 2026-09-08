@@ -20,30 +20,72 @@ describe Browser::Firefox do
   let(:expected_bookmarks_sql){'SELECT moz_bookmarks.id, moz_places.url, moz_bookmarks.title, moz_bookmarks.dateAdded FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id WHERE moz_bookmarks.type = 1 ORDER BY moz_bookmarks.dateAdded DESC;'}
   let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
 
-  describe Browser::Firefox::DEFAULT_PROFILE_NAME do
-    let(:expected_default_profile_name){'**'}
+  describe '.default_profile_name' do
+    let(:profiles_ini) do
+      <<~INI
+        [General]
+        StartWithLastProfile=0
+        Version=2
 
-    it "contains the correct default profile name" do
-      expect(Browser::Firefox::DEFAULT_PROFILE_NAME).to eq(expected_default_profile_name)
+        [Profile0]
+        Name=default-release
+        IsRelative=1
+        Path=Profiles/abcd1234.default-release
+
+        [InstallD7847D39F15872CF]
+        Default=Profiles/abcd1234.default-release
+        Locked=1
+
+        [Profile1]
+        Name=default
+        IsRelative=1
+        Path=Profiles/efgh5678.default
+        Default=1
+      INI
+    end
+
+    it "is the profile an [Install] section names, over the one flagged Default=1" do
+      expect(Browser::Firefox.default_profile_name(profiles_ini)).to eq('abcd1234.default-release')
+    end
+
+    it "is the profile flagged Default=1 when no [Install] section names one" do
+      without_install = profiles_ini.sub(/\[Install.*?\n\n/m, '')
+      expect(Browser::Firefox.default_profile_name(without_install)).to eq('efgh5678.default')
+    end
+
+    it "is the only profile when nothing names a default" do
+      sole = "[Profile0]\nName=default-release\nIsRelative=1\nPath=Profiles/abcd1234.default-release\n"
+      expect(Browser::Firefox.default_profile_name(sole)).to eq('abcd1234.default-release')
+    end
+
+    it "raises Browser::Unreadable when two installations each name a default" do
+      two = profiles_ini + "\n[Install0123456789ABCDEF]\nDefault=Profiles/efgh5678.default\n"
+      expect{Browser::Firefox.default_profile_name(two)}.to raise_error(Browser::Unreadable, /names 2 profiles/)
+    end
+
+    it "raises Browser::Unreadable when there are no profiles" do
+      expect{Browser::Firefox.default_profile_name("[General]\nVersion=2\n")}.to raise_error(Browser::Unreadable, /names 0 profiles/)
     end
   end
+
+  let(:profile_name){'abcd1234.default-release'}
 
   context "class methods" do
     subject{Browser::Firefox}
 
     describe '.bookmarks_location' do
-      let(:expected_bookmarks_location){File.expand_path('~/Library/Application Support/Firefox/Profiles/**/places.sqlite')}
+      let(:expected_bookmarks_location){File.expand_path('~/Library/Application Support/Firefox/Profiles/abcd1234.default-release/places.sqlite')}
 
       it "contains the correct bookmarks location" do
-        expect(subject.bookmarks_location).to eq(expected_bookmarks_location)
+        expect(subject.bookmarks_location(profile_name: profile_name)).to eq(expected_bookmarks_location)
       end
     end
 
     describe '.history_location' do
-      let(:expected_history_location){File.expand_path('~/Library/Application Support/Firefox/Profiles/**/places.sqlite')}
+      let(:expected_history_location){File.expand_path('~/Library/Application Support/Firefox/Profiles/abcd1234.default-release/places.sqlite')}
 
       it "contains the correct history location" do
-        expect(subject.history_location).to eq(expected_history_location)
+        expect(subject.history_location(profile_name: profile_name)).to eq(expected_history_location)
       end
     end
 
@@ -61,10 +103,9 @@ describe Browser::Firefox do
   end
 
   context "instance methods" do
-    subject{Browser::Firefox.new(bookmarks_location: places_fixtures_location, history_location: places_fixtures_location)}
+    subject{Browser::Firefox.new(bookmarks_location: places_fixtures_location, history_location: places_fixtures_location, profile_name: profile_name)}
 
     let(:browser_name){'Firefox'}
-    let(:default_profile_name){'**'}
     let(:expected_history) do
       [
         {'id' => 1, 'url' => 'https://addons.mozilla.org/en-US/firefox/', 'title' => 'Extension Starter Pack', 'visit_date' => 1787449152741667},
@@ -85,7 +126,7 @@ describe Browser::Firefox do
       end
 
       it "assigns @profile_name" do
-        expect(subject.instance_variable_get(:@profile_name)).to eq(default_profile_name)
+        expect(subject.instance_variable_get(:@profile_name)).to eq(profile_name)
       end
     end
 

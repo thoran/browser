@@ -16,6 +16,11 @@ class Browser
       def profiles_path
         "#{root_path}/Browser"
       end
+
+      # And its profiles.ini beside them, where Firefox keeps its own beside Profiles.
+      def profiles_ini_path
+        File.expand_path("#{profiles_path}/profiles.ini")
+      end
     end
   end
 end

@@ -17,30 +17,32 @@ describe Browser::TorBrowser do
   let(:expected_bookmarks_sql){'SELECT moz_bookmarks.id, moz_places.url, moz_bookmarks.title, moz_bookmarks.dateAdded FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id WHERE moz_bookmarks.type = 1 ORDER BY moz_bookmarks.dateAdded DESC;'}
   let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
 
-  describe Browser::TorBrowser::DEFAULT_PROFILE_NAME do
-    let(:expected_default_profile_name){'**'}
+  describe '.default_profile_name' do
+    let(:profiles_ini){"[Profile0]\nName=default\nIsRelative=1\nPath=abcd1234.default\nDefault=1\n\n[General]\nStartWithLastProfile=1\nVersion=2\n"}
 
-    it "contains the correct default profile name" do
-      expect(Browser::TorBrowser::DEFAULT_PROFILE_NAME).to eq(expected_default_profile_name)
+    it "is the one profile Tor Browser flags, which sits beside profiles.ini rather than under Profiles" do
+      expect(Browser::TorBrowser.default_profile_name(profiles_ini)).to eq('abcd1234.default')
     end
   end
+
+  let(:profile_name){'abcd1234.default'}
 
   context "class methods" do
     subject{Browser::TorBrowser}
 
     describe '.bookmarks_location' do
-      let(:expected_bookmarks_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Browser/**/places.sqlite')}
+      let(:expected_bookmarks_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Browser/abcd1234.default/places.sqlite')}
 
       it "contains the correct bookmarks location" do
-        expect(subject.bookmarks_location).to eq(expected_bookmarks_location)
+        expect(subject.bookmarks_location(profile_name: profile_name)).to eq(expected_bookmarks_location)
       end
     end
 
     describe '.history_location' do
-      let(:expected_history_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Browser/**/places.sqlite')}
+      let(:expected_history_location){File.expand_path('~/Library/Application Support/TorBrowser-Data/Browser/abcd1234.default/places.sqlite')}
 
       it "contains the correct history location" do
-        expect(subject.history_location).to eq(expected_history_location)
+        expect(subject.history_location(profile_name: profile_name)).to eq(expected_history_location)
       end
     end
 
@@ -58,10 +60,9 @@ describe Browser::TorBrowser do
   end
 
   context "instance methods" do
-    subject{Browser::TorBrowser.new(bookmarks_location: places_fixtures_location, history_location: places_fixtures_location)}
+    subject{Browser::TorBrowser.new(bookmarks_location: places_fixtures_location, history_location: places_fixtures_location, profile_name: profile_name)}
 
     let(:browser_name){'TorBrowser'}
-    let(:default_profile_name){'**'}
     let(:expected_history) do
       [
         {'id' => 1, 'url' => 'https://addons.mozilla.org/en-US/firefox/', 'title' => 'Extension Starter Pack', 'visit_date' => 1787449152741667},
@@ -82,7 +83,7 @@ describe Browser::TorBrowser do
       end
 
       it "assigns @profile_name" do
-        expect(subject.instance_variable_get(:@profile_name)).to eq(default_profile_name)
+        expect(subject.instance_variable_get(:@profile_name)).to eq(profile_name)
       end
     end
 

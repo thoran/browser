@@ -51,8 +51,8 @@ Browser.new('TorBrowser')
 Browser.new('tor_browser')
 ```
 
-A Firefox or Tor Browser profile is named explicitly, since their profiles live in
-hashed directories:
+Firefox and Tor Browser open the profile their profiles.ini names as the default, so
+none need be named. To reach another:
 ```ruby
 Browser.new(:firefox, profile_name: 'abcd1234.default-release').bookmarks.to_objects
 ```
@@ -74,9 +74,9 @@ returns the path. `readable?` says whether the data can be read right now.
 | Brave | JSON | SQLite | yes | default, or named |
 | Chrome | JSON | SQLite | yes | default, or named |
 | Chromium | JSON | SQLite | yes | default, or named |
-| Firefox | SQLite, places.sqlite | SQLite, the same file | flat | must be named |
+| Firefox | SQLite, places.sqlite | SQLite, the same file | flat | default, or named |
 | Safari | binary plist | SQLite | yes | none |
-| Tor Browser | SQLite, places.sqlite | SQLite, the same file | flat | must be named |
+| Tor Browser | SQLite, places.sqlite | SQLite, the same file | flat | default, or named |
 
 ## Caveats
 
@@ -86,9 +86,11 @@ returns the path. `readable?` says whether the data can be read right now.
   read from SQLite, which the browser locks while it is open — so reading a browser
   you are using raises `Browser::Unreadable`. Ask `readable?` first, or quit it.
 - **Which Firefox profile.** Firefox and Tor Browser keep profiles in hashed
-  directories, so there is no single default to assume; pass `profile_name:`. A
-  directory named plainly `default` is usually a leftover — the live one is
-  `<hash>.default-release`.
+  directories, and the default is the one profiles.ini names, which is the one
+  Firefox itself would open. A directory named plainly `default` is usually a
+  leftover, the live one being `<hash>.default-release`, and the install entry in
+  profiles.ini knows which. Two installations, say release and Nightly, each name a
+  default, and then `profile_name:` is required.
 - **Tor Browser is looked for in `~/Library/Application Support/TorBrowser-Data`.**
   That is where an install in `/Applications` keeps its data. One installed elsewhere
   keeps it beside the application, and wants `bookmarks_location:` and

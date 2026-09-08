@@ -82,8 +82,8 @@ describe Browser::Chromium do
         expect(subject.instance_variable_get(:@history_location)).to eq(history_fixtures_location)
       end
 
-      it "assigns @profile_name" do
-        expect(subject.instance_variable_get(:@profile_name)).to eq(default_profile_name)
+      it "takes the default profile name when none is given" do
+        expect(subject.profile_name).to eq(default_profile_name)
       end
     end
 

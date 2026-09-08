@@ -19,9 +19,29 @@
 | `Browser::Bookmark`, a tree; folders carried; `to_objects` flattens to title, url, folder; all renderers uniform across browsers | 0.10.0 | 2026-08-25 |
 | CHANGELOG, README, MIT licence and LICENSE file | 0.9.0, 0.11.0, 0.6.1 | 2026-08-23, 2026-09-07, 2026-08-22 |
 | One set of renderers, shared by bookmarks and history | 0.12.0 | 2026-09-09 |
+| The Firefox family's default profile, the one profiles.ini names | 0.13.0 | 2026-09-09 |
 
 
 ## 20260909
+
+0.13.0: Firefox and Tor Browser's default profile, the one profiles.ini names.
+
+1. + Browser::FirefoxBased.default_profile_name: the profile Firefox itself would open, read from profiles.ini.
+2. The [Install] section's, as Firefox has written since 67; else the [Profile] flagged Default=1; else the only one there.
+3. No profiles.ini, or two installations each naming a default, raises Browser::Unreadable, which asks for profile_name:.
+4. - Browser::FirefoxBased::DEFAULT_PROFILE_NAME, the glob "**", which File.expand_path never expanded.
+5. An unnamed Firefox read a path with ** in it, and dumped to Firefox_**_Bookmarks_<date>.
+6. + Browser::TorBrowser.profiles_ini_path: beside its profiles, where Firefox keeps its own beside Profiles.
+7. + Browser::Base.default_profile_name, DEFAULT_PROFILE_NAME for the browsers whose default is a constant.
+8. ~ Browser::Base#profile_name, #bookmarks_location, #history_location: readers, each derived when first wanted.
+9. So making a browser reads nothing, and where no default can be named readable? answers false rather than construction raising.
+10. - Browser::Base: the attr_accessor, whose writers nothing used.
+11. ~ test/Browser/Firefox_test.rb, TorBrowser_test.rb: .default_profile_name over profiles.ini texts, [Install] winning over the flag.
+12. ~ the same two: the locations for a named profile, in place of the glob.
+13. ~ test/Browser/Brave_test.rb, Chrome_test.rb, Chromium_test.rb: the profile name read rather than assigned.
+14. ~ README.md: "default, or named" for Firefox and Tor Browser, and the usage and caveat to match.
+15. ~ Browser::VERSION: /0.12.0/0.13.0/
+
 
 0.12.0: + Browser::Rendering, the renderers once, shared by Bookmarks and History.
 
