@@ -28,11 +28,8 @@ class Browser
 
       def from_sqlite(browser_instance)
         database = SQLite3::Database.new(browser_instance.bookmarks_location)
-        _column_names, *rows = database.execute2(browser_instance.class.send(:bookmarks_sql))
-        # The query fetches leaves; folder structure is not yet reconstructed, so
-        # they hang directly from the root.
-        leaves = rows.collect{|_id, url, title, *| Browser::Bookmark.new(title: title, url: url)}
-        Browser::Bookmark.new(children: leaves)
+        column_names, *rows = database.execute2(browser_instance.class.send(:bookmarks_sql))
+        sqlite_tree(rows.collect{|row| column_names.zip(row).to_h})
       end
 
       private
@@ -47,6 +44,42 @@ class Browser
 
       def plist_children(node)
         Array(node['Children']).filter_map{|child| plist_node(child)}
+      end
+
+      # moz_bookmarks is one table of folders and bookmarks, each row naming its
+      # parent and its position within it, and the root the row with no parent.
+      # The tags root is left out: a tag is a folder holding a copy of every
+      # bookmark so tagged, and Firefox does not show it as one.
+      def sqlite_tree(records)
+        children = records.group_by{|record| record['parent']}
+        Browser::Bookmark.new(children: Array(children[0]).flat_map{|root| sqlite_children(root, children)})
+      end
+
+      def sqlite_children(record, children)
+        Array(children[record['id']]).filter_map{|child| sqlite_node(child, children)}
+      end
+
+      # type 1 is a bookmark, 2 a folder and 3 a separator.
+      def sqlite_node(record, children)
+        case record['type']
+        when 1
+          Browser::Bookmark.new(title: record['title'], url: record['url'])
+        when 2
+          sqlite_folder(record, children) unless record['guid'] == 'tags________'
+        end
+      end
+
+      # The roots are stored under names Firefox never shows; these are the names it does.
+      SQLITE_ROOT_TITLES = {
+        'menu________' => 'Bookmarks Menu',
+        'toolbar_____' => 'Bookmarks Toolbar',
+        'unfiled_____' => 'Other Bookmarks',
+        'mobile______' => 'Mobile Bookmarks',
+      }
+
+      def sqlite_folder(record, children)
+        title = SQLITE_ROOT_TITLES.fetch(record['guid'], record['title'])
+        Browser::Bookmark.new(title: title, name: record['title'], children: sqlite_children(record, children))
       end
 
       def plist_node(node)

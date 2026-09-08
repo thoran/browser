@@ -20,9 +20,26 @@
 | CHANGELOG, README, MIT licence and LICENSE file | 0.9.0, 0.11.0, 0.6.1 | 2026-08-23, 2026-09-07, 2026-08-22 |
 | One set of renderers, shared by bookmarks and history | 0.12.0 | 2026-09-09 |
 | The Firefox family's default profile, the one profiles.ini names | 0.13.0 | 2026-09-09 |
+| Firefox and Tor Browser bookmarks with their folders | 0.14.0 | 2026-09-09 |
 
 
 ## 20260909
+
+0.14.0: Firefox and Tor Browser bookmarks with their folders.
+
+1. ~ Browser::Bookmarks.from_sqlite: builds the tree, hanging children under parents from the root down, in position order.
+2. moz_bookmarks is one table of folders and bookmarks, each row naming its parent and its position within it.
+3. ~ the same: separators skipped, and the tags root left out, a tag being a folder holding a copy of every bookmark so tagged.
+4. ~ the same: menu, toolbar, unfiled and mobile shown as Bookmarks Menu, Bookmarks Toolbar, Other Bookmarks and Mobile Bookmarks.
+5. Until now the query fetched leaves alone, and every folder came back empty.
+6. ~ Browser::Bookmark: + name, what a browser stores, which is the title but for Firefox's roots.
+7. The title is what it shows, and what a folder path is made of; writing back into a browser would want the name.
+8. ~ Browser::FirefoxBased.bookmarks_sql: every row with its parent, position, type and guid, in place of the leaves ordered by date.
+9. ~ Rakefile, test/fixtures/FirefoxBased_places.sqlite: + a tag folder, a separator, and a toolbar bookmark, pinning the three rules.
+10. ~ test/Browser/Firefox_test.rb, TorBrowser_test.rb: the five bookmarks in tree order with their folders.
+11. ~ README.md: "yes" for Firefox and Tor Browser's folders; - the caveat that they were flat.
+12. ~ Browser::VERSION: /0.13.0/0.14.0/
+
 
 0.13.0: Firefox and Tor Browser's default profile, the one profiles.ini names.
 

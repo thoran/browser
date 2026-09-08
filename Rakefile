@@ -92,7 +92,9 @@ namespace :fixtures do
       db.execute('INSERT INTO moz_places (id, url, title, rev_host) VALUES (?, ?, ?, ?)', [id, url, title, rev_host])
     end
 
-    # type 2 is a folder, type 1 a bookmark.  The roots are fixed ids with padded guids.
+    # type 2 is a folder, type 1 a bookmark and type 3 a separator.  The roots are
+    # fixed ids with padded guids.  Under tags, a folder per tag holds a copy of
+    # each bookmark so tagged.
     [
       [1, 2, nil, 0, 0, nil, 'root________'],
       [2, 2, nil, 1, 0, 'menu', 'menu________'],
@@ -105,6 +107,10 @@ namespace :fixtures do
       [9, 1, 2, 7, 1, 'Customize Firefox', 'dTBx_Z-u_6U6'],
       [10, 1, 3, 7, 2, 'Get Involved', 'l00bhg3kKbYX'],
       [11, 1, 4, 7, 3, 'About Us', 'pJ9IZ7ivzMw6'],
+      [12, 2, nil, 4, 0, 'firefox', 'Q2r8sT5vWx1y'],
+      [13, 1, 1, 12, 0, 'Get Help', 'Zb3cD6eF9gH2'],
+      [14, 3, nil, 3, 0, nil, 'Kj4mN7pQ0rS3'],
+      [15, 1, 5, 3, 1, 'Extension Starter Pack', 'Tu5vW8xY1zA4'],
     ].each do |id, type, fk, parent, position, title, guid|
       db.execute(
         'INSERT INTO moz_bookmarks (id, type, fk, parent, position, title, dateAdded, lastModified, guid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',

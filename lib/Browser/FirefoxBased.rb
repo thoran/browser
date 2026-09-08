@@ -75,7 +75,7 @@ class Browser
       end
 
       def bookmarks_sql
-        'SELECT moz_bookmarks.id, moz_places.url, moz_bookmarks.title, moz_bookmarks.dateAdded FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id WHERE moz_bookmarks.type = 1 ORDER BY moz_bookmarks.dateAdded DESC;'
+        'SELECT moz_bookmarks.id, moz_bookmarks.parent, moz_bookmarks.position, moz_bookmarks.type, moz_bookmarks.title, moz_bookmarks.guid, moz_places.url FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id ORDER BY moz_bookmarks.parent, moz_bookmarks.position;'
       end
 
       def history_sql

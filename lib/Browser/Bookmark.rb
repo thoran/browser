@@ -1,14 +1,14 @@
 # Browser/Bookmark.rb
 # Browser::Bookmark
 
-# A bookmark, which may hold bookmarks: a folder is a Bookmark with children, a
-# leaf is a Bookmark with a url, and the root is the Bookmark the whole tree hangs
-# from.  It knows nothing of how a browser stores bookmarks, only the shape they
-# share once read.
+# It knows nothing of how a browser stores bookmarks, only the shape they share
+# once read.  The title is what the browser shows; the name is what it stores,
+# which is the title but for Firefox's roots, where menu is shown as Bookmarks
+# Menu, and which writing back into a browser would need.
 
 class Browser
   class Bookmark
-    attr_accessor :title, :url, :children
+    attr_accessor :title, :name, :url, :children
 
     def leaf?
       !@url.nil?
@@ -31,8 +31,9 @@ class Browser
 
     private
 
-    def initialize(title: nil, url: nil, children: [])
+    def initialize(title: nil, name: title, url: nil, children: [])
       @title = title
+      @name = name
       @url = url
       @children = children
     end

@@ -27,6 +27,13 @@ describe Browser::Bookmark do
     end
   end
 
+  describe "#name" do
+    it "is the title unless given, which is what a browser stores where that differs from what it shows" do
+      expect(Browser::Bookmark.new(title: 'Bookmarks Menu').name).to eq('Bookmarks Menu')
+      expect(Browser::Bookmark.new(title: 'Bookmarks Menu', name: 'menu').name).to eq('menu')
+    end
+  end
+
   describe "#flatten" do
     subject do
       Browser::Bookmark.new(children: [

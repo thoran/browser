@@ -74,9 +74,9 @@ returns the path. `readable?` says whether the data can be read right now.
 | Brave | JSON | SQLite | yes | default, or named |
 | Chrome | JSON | SQLite | yes | default, or named |
 | Chromium | JSON | SQLite | yes | default, or named |
-| Firefox | SQLite, places.sqlite | SQLite, the same file | flat | default, or named |
+| Firefox | SQLite, places.sqlite | SQLite, the same file | yes | default, or named |
 | Safari | binary plist | SQLite | yes | none |
-| Tor Browser | SQLite, places.sqlite | SQLite, the same file | flat | default, or named |
+| Tor Browser | SQLite, places.sqlite | SQLite, the same file | yes | default, or named |
 
 ## Caveats
 
@@ -98,9 +98,6 @@ returns the path. `readable?` says whether the data can be read right now.
 - **Safari's Bookmarks.plist is a mirror.** With iCloud bookmark sync on, a sync
   agent maintains it and writes it on change, so it can be absent while Safari is
   working perfectly. It is a binary property list, read here via CFPropertyList.
-- **Firefox and Tor Browser bookmarks are flat.** Their folder structure is not yet
-  reconstructed, so each bookmark comes back with an empty `folder`. The
-  Chromium-family and Safari carry their folders.
 
 ## Contributing
 

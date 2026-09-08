@@ -17,7 +17,7 @@ require 'browser'
 
 describe Browser::Firefox do
   let(:places_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/FirefoxBased_places.sqlite")}
-  let(:expected_bookmarks_sql){'SELECT moz_bookmarks.id, moz_places.url, moz_bookmarks.title, moz_bookmarks.dateAdded FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id WHERE moz_bookmarks.type = 1 ORDER BY moz_bookmarks.dateAdded DESC;'}
+  let(:expected_bookmarks_sql){'SELECT moz_bookmarks.id, moz_bookmarks.parent, moz_bookmarks.position, moz_bookmarks.type, moz_bookmarks.title, moz_bookmarks.guid, moz_places.url FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id ORDER BY moz_bookmarks.parent, moz_bookmarks.position;'}
   let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
 
   describe '.default_profile_name' do
@@ -138,10 +138,11 @@ describe Browser::Firefox do
 
     let(:expected_bookmarks) do
       [
-        {title: 'About Us', url: 'https://www.mozilla.org/about/', folder: ''},
-        {title: 'Get Involved', url: 'https://www.mozilla.org/contribute/', folder: ''},
-        {title: 'Customize Firefox', url: 'https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars', folder: ''},
-        {title: 'Get Help', url: 'https://support.mozilla.org/products/firefox', folder: ''},
+        {title: 'Get Help', url: 'https://support.mozilla.org/products/firefox', folder: 'Bookmarks Menu/Mozilla Firefox'},
+        {title: 'Customize Firefox', url: 'https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars', folder: 'Bookmarks Menu/Mozilla Firefox'},
+        {title: 'Get Involved', url: 'https://www.mozilla.org/contribute/', folder: 'Bookmarks Menu/Mozilla Firefox'},
+        {title: 'About Us', url: 'https://www.mozilla.org/about/', folder: 'Bookmarks Menu/Mozilla Firefox'},
+        {title: 'Extension Starter Pack', url: 'https://addons.mozilla.org/en-US/firefox/', folder: 'Bookmarks Toolbar'},
       ]
     end
 
