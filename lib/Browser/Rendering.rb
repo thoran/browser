@@ -96,7 +96,7 @@ class Browser
     private
 
     def dump_filename(extension)
-      [@browser_instance.send(:name), @browser_instance.profile_name, kind, Date.today].compact.join('_') + ".#{extension}"
+      [@browser_instance.name, @browser_instance.profile_name, kind, Date.today].compact.join('_') + ".#{extension}"
     end
 
     def kind

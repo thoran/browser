@@ -132,7 +132,7 @@ describe Browser::Firefox do
 
     describe "#name" do
       it "returns name" do
-        expect(subject.send(:name)).to eq(browser_name)
+        expect(subject.name).to eq(browser_name)
       end
     end
 

@@ -1,6 +1,5 @@
 # browser/TODO
 
 - browser.rb.gemspec: a description which is not the summary; RubyGems warns while they are identical.
-- Browser::Rendering#dump_filename: reaches into the browser through four sends for name and profile_name; a method on the browser would hand them over.
-- lib/String/wrap.rb, lib/String/ascii_only.rb, lib/Array/to_csv_row.rb: ship, and monkeypatch String and Array for anyone who loads them. The stdlib CSV would replace to_csv_row, quoting only what needs it and keeping non-ASCII.
+- Browser::Rendering::CSV: lib/Array/to_csv_row.rb, lib/String/wrap.rb and lib/String/ascii_only.rb ship now and monkeypatch Array and String for anyone who loads them. A better writer would take all three with it, and what survives of them elsewhere goes under Thoran::.
 - lib/browser.rb: the History paragraph in the header, which the README could carry, as exitor's does.

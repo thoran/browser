@@ -35,16 +35,16 @@ class Browser
       @history_location ||= self.class.history_location(profile_name: profile_name)
     end
 
+    def name
+      self.class.to_s.split('::').last
+    end
+
     private
 
     def initialize(bookmarks_location: nil, history_location: nil, profile_name: nil)
       @bookmarks_location = bookmarks_location
       @history_location = history_location
       @profile_name = profile_name
-    end
-
-    def name
-      self.class.to_s.split('::').last
     end
   end
 end

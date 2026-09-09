@@ -68,6 +68,15 @@ so nothing in it ran until 0.6.1.
 
 ## 20260909
 
+0.14.2: Browser::Base#name public, and the TODO brought up to date.
+
+1. ~ Browser::Base#name: public, the renderers and the tests having reached for it with send; it was private for no reason anyone could name.
+2. ~ Browser::Rendering#dump_filename: asks the browser its name, in place of the send.
+3. ~ test/Browser/*_test.rb: #name called, in place of sent.
+4. ~ TODO: - dump_filename's sends, done; ~ the monkeypatches, a better writer taking the three, in place of the stdlib's CSV.
+5. ~ Browser::VERSION: /0.14.1/0.14.2/
+
+
 0.14.1: + ROADMAP.md and TODO, and the capabilities per browser pinned to their versions.
 
 1. ~ CHANGELOG: + How this history is kept, at the head.
