@@ -20,4 +20,16 @@ describe 'loading' do
   it "defines Browser::VERSION on require 'browser'" do
     expect(ruby('require "browser"; print Browser::VERSION')).to match(/\A\d+\.\d+\.\d+\z/)
   end
+
+  it "resolves every helper it requires from lib alone" do
+    expect(ruby('require "browser"; print $LOADED_FEATURES.grep(/String\/ascii_only/).size')).to eq('1')
+  end
+
+  it "gives the top-level names on require 'browser-classes'" do
+    expect(ruby('require "browser-classes"; print Chrome.equal?(Browser::Chrome)')).to eq('true')
+  end
+
+  it "loads without warning under -w" do
+    expect(ruby('require "browser"; require "browser-classes"; print "ok"', '-w')).to eq('ok')
+  end
 end

@@ -3,12 +3,6 @@
 Jobs are in TODO. What is here is undecided: questions to be answered rather than
 work to be done, which is why they are prose and the jobs are a list.
 
-## Whether the Gemfile goes
-
-statistics.rb, the gemspec reference, has neither a Gemfile nor a lock. The gemspec
-declares every dependency, so the Gemfile adds nothing a `gem 'browser.rb'` line does
-not, and a consumer never sees it.
-
 ## The Netscape bookmark file, and writing into browsers
 
 The original purpose, from the load file's own header, was to dump every bookmark from

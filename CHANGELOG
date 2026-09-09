@@ -68,6 +68,18 @@ so nothing in it ran until 0.6.1.
 
 ## 20260909
 
+0.14.6: + test/gemspec_test.rb and test/loading_test.rb, the checks a publish wants; the Gemfile stays.
+
+1. + test/gemspec_test.rb: the gemspec valid, pinning no date, and taking its version from Browser::VERSION.
+2. ~ the same: the three runtime and four development dependencies declared, and no file listed which is not there, as impuri, monotonic.rb, bitget.rb and duration.rb have.
+3. ~ test/loading_test.rb: + require 'browser' resolves its helpers from lib, and require 'browser-classes' gives the top-level names.
+4. ~ the same: + both load without warning under -w, beside the Browser::VERSION example 0.14.4 began the file with.
+5. As monotonic.rb and duration.rb have. The ascii_only fault, resolved only from ~/lib/ruby until 0.10.1, would have failed here.
+6. ~ ROADMAP.md: - whether the Gemfile goes. It stays.
+7. Six of seven recent gems carry one reading gemspec, statistics.rb alone does not, and the question had taken the outlier for the rule.
+8. ~ Browser::VERSION: /0.14.5/0.14.6/
+
+
 0.14.5: Ruby 3.2 or later, which is what the dependencies require.
 
 1. ~ browser.rb.gemspec: required_ruby_version, '>= 2.7' --> '>= 3.2'.
