@@ -6,10 +6,6 @@
 # would probably be a good idea to combine those efforts into a single browser library to handle both bookmarks
 # and history, as well as any other similar browser data extraction effort.
 
-# Todo:
-# 1. Add Opera support.
-# 2. Add Linux and Windows support.
-
 class Browser
   LIST = %w{
     Brave

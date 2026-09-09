@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## How this history is kept
+
+0.0.0 to 0.6.0 are the record of the library as it was: numbered revisions, directories
+with headers, which the imported commits reproduce byte for byte, dates and placeholders
+included, and which are not rewritten. Their commit messages and CHANGELOG entries are
+not that record but its narration, none of which existed before 2026: changelogger
+derived it from the headers and the diffs, and it may be regenerated or corrected toward
+the record at any time, made more accurate to it and not prettier than it. 0.6.1 onward
+is the work resumed in August 2026 in preparation for release, and that stretch was
+rewritten as it went so that each correction sits at the commit that should have made
+it rather than on top as a patch. So a commit's date there is when its version was
+made, not when everything in it was written, and each entry below describes its commit
+as it now stands. Once a version is published, the line moves to it: what is published
+is history someone else may hold, and stays.
+
 ## Capabilities, and when each arrived
 
 | capability | version | date |
@@ -23,7 +38,45 @@
 | Firefox and Tor Browser bookmarks with their folders | 0.14.0 | 2026-09-09 |
 
 
+## Capabilities, per browser, and when each arrived
+
+The README's table, with each cell holding the version at which it became true. The
+README's table is the state at its version, and a version which changes a cell
+changes the table, so that each tag shows its own.
+
+| browser | bookmarks | history | folders | profile named | profile default |
+|---|---|---|---|---|---|
+| Brave | 0.6.1 | 0.4.0 | 0.10.0 | 0.5.0 | 0.0.0 |
+| Chrome | 0.6.1 | 0.4.0 | 0.10.0 | 0.5.0 | 0.0.0 |
+| Chromium | 0.6.1 | 0.4.0 | 0.10.0 | 0.5.0 | 0.0.0 |
+| Firefox | 0.7.0 | 0.7.0 | 0.14.0 | 0.5.0 | 0.13.0 |
+| Safari | 0.6.1 | 0.4.0 | 0.10.0 | none | none |
+| Tor Browser | 0.7.0 | 0.7.0 | 0.14.0 | 0.7.0 | 0.13.0 |
+
+Three cells are later than the entries suggest. Firefox and Tor Browser's bookmarks
+and history are 0.7.0: at 0.4.0 the history query was a placeholder, SELECT * FROM
+moz_bookmarks ORDER BY ? DESC, the wrong table with a question mark for the column,
+and at 0.6.1 the bookmarks query read moz_bookmarks alone, which holds titles but
+not URLs; both gained their join to moz_places, where the URLs are, at 0.7.0. Tor
+Browser's named profile is 0.7.0: the argument existed from 0.5.0 but built a path
+under Profiles where Tor Browser uses Browser, until 0.7.0 corrected it. The other
+four browsers' bookmarks are 0.6.1 rather than 0.6.0: the readers were written in
+0.6.0, but its gemspec required a VERSION file which did not exist, its constants
+resolved to the wrong classes and its constructor ignored the location it was given,
+so nothing in it ran until 0.6.1.
+
+
 ## 20260909
+
+0.14.1: + ROADMAP.md and TODO, and the capabilities per browser pinned to their versions.
+
+1. ~ CHANGELOG: + How this history is kept, at the head.
+2. ~ the same: + Capabilities, per browser, and when each arrived.
+3. + ROADMAP.md
+4. + TODO
+5. ~ lib/browser.rb: - the header's Todo, its two items now in ROADMAP.md.
+6. ~ Browser::VERSION: /0.14.0/0.14.1/
+
 
 0.14.0: Firefox and Tor Browser bookmarks with their folders.
 
