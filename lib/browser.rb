@@ -1,6 +1,8 @@
 # browser.rb
 # Browser
 
+require_relative './Browser/VERSION'
+
 class Browser
   LIST = %w{
     Brave

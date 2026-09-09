@@ -68,6 +68,16 @@ so nothing in it ran until 0.6.1.
 
 ## 20260909
 
+0.14.4: Browser::VERSION defined by requiring the library.
+
+1. ~ lib/browser.rb: + require_relative './Browser/VERSION'.
+2. Only the gemspec had required it, so the installed gem did not know its version: require 'browser', Browser::VERSION raised NameError.
+3. Found by installing the built gem into an empty GEM_HOME, which is the check a publish wants.
+4. + test/loading_test.rb: require 'browser' defines Browser::VERSION, in a process of its own with lib alone on the load path.
+5. Within the suite's own process everything is loaded already, so no test there could have failed.
+6. ~ Browser::VERSION: /0.14.3/0.14.4/
+
+
 0.14.3: The gemspec's summary and description say what the gem does, and the README carries the header's History.
 
 1. ~ browser.rb.gemspec: the summary, which claimed writing where there is none yet, now says reading.
