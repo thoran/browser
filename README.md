@@ -99,6 +99,10 @@ returns the path. `readable?` says whether the data can be read right now.
   agent maintains it and writes it on change, so it can be absent while Safari is
   working perfectly. It is a binary property list, read here via CFPropertyList.
 
+## History
+
+I realised when wanting to dump all bookmarks from any browsers on one machine for import to another that I'd already written something of the sort for history called dump_browser_history_to_csv and that it would probably be a good idea to combine those efforts into a single browser library to handle both bookmarks and history, as well as any other similar browser data extraction effort.
+
 ## Contributing
 
 1. Fork it (https://github.com/thoran/browser/fork)

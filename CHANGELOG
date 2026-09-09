@@ -68,6 +68,16 @@ so nothing in it ran until 0.6.1.
 
 ## 20260909
 
+0.14.3: The gemspec's summary and description say what the gem does, and the README carries the header's History.
+
+1. ~ browser.rb.gemspec: the summary, which claimed writing where there is none yet, now says reading.
+2. ~ the same: the description, the summary again and RubyGems warning of it, now names the six browsers and the three renderings.
+3. ~ README.md: + History, the paragraph the load file's header had carried since 0.0.0, in its author's words.
+4. ~ lib/browser.rb: - that paragraph from the header, as exitor's went into its README.
+5. ~ TODO: - the two, done.
+6. ~ Browser::VERSION: /0.14.2/0.14.3/
+
+
 0.14.2: Browser::Base#name public, and the TODO brought up to date.
 
 1. ~ Browser::Base#name: public, the renderers and the tests having reached for it with send; it was private for no reason anyone could name.
