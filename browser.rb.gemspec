@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/thoran/browser'
   spec.license = 'MIT'
 
-  spec.required_ruby_version = '>= 2.7'
+  spec.required_ruby_version = '>= 3.2'
   spec.require_paths = ['lib']
 
   spec.files = [

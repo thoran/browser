@@ -68,6 +68,16 @@ so nothing in it ran until 0.6.1.
 
 ## 20260909
 
+0.14.5: Ruby 3.2 or later, which is what the dependencies require.
+
+1. ~ browser.rb.gemspec: required_ruby_version, '>= 2.7' --> '>= 3.2'.
+2. CFPropertyList 4.0.0 and sqlite3 2.9.6 each require Ruby 3.2, so on 2.7 the install failed on the dependencies.
+3. Found by installing for Ruby 2.7.8 into an empty GEM_HOME.
+4. Every file's syntax is fine under 2.7; the floor is the dependencies'.
+5. The suite passes under 3.4.1, the nearest Ruby to it here with an interpreter.
+6. ~ Browser::VERSION: /0.14.4/0.14.5/
+
+
 0.14.4: Browser::VERSION defined by requiring the library.
 
 1. ~ lib/browser.rb: + require_relative './Browser/VERSION'.
