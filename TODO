@@ -1,3 +1,12 @@
 # browser/TODO
 
-- Browser::Rendering::CSV: lib/Array/to_csv_row.rb and lib/String/wrap.rb ship now and monkeypatch Array and String for anyone who loads them. A better writer would take both with it, and what survives of them elsewhere goes under Thoran::. See ROADMAP.md on whether a library should do the escaping.
+- Browser::Rendering::CSV renders through the stdlib CSV, so nothing of ours does the escaping and no monkeypatch ships. Revisit if a better writer becomes available.
+- Browser::Bookmarks: a public reader for the tree, which results holds and nothing outside can reach, so a consumer gets the flattened records and never the folders. Browser::Bookmark#name, which writing back into a browser would want, goes with it.
+- Browser::Base: a public reader for the profile directory, profiles_path joined to the profile name. A Selenium front-end wants it, and 0.13.0's profiles.ini reading already resolves which profile that is.
+- Browser::History: a representation of its own, as Browser::Bookmark is for bookmarks, with the three epochs converted: Chrome's microseconds from 1601, Firefox's from 1970, Safari's seconds from 2001. See ROADMAP.md on what it should carry.
+- Browser::TorBrowser: locating the bundle when it is installed outside /Applications, which bookmarks_location: and history_location: cover meanwhile. No other browser needs it and it does not port.
+- Browser::Bookmark: the roots given one identity, Firefox's menu, toolbar, unfiled and mobile and the Chromium and Safari equivalents mapping to it, so a converted toolbar lands in a toolbar rather than a folder named after one.
+- Browser::Bookmark: + the dates added and modified, and the guid, which all three sources hold and the readers drop; a second import duplicates everything without it.
+- Browser::Bookmarks: separators carried, which .from_sqlite skips.
+- Browser::Unreadable: a Browser::Error for it to inherit from, so a consumer has one thing to rescue. Worth it once there is a second error to join it, which writing into browsers, cookies and a client would each bring.
+- Browser::Bookmarks.from_sqlite: a type 1 row whose LEFT JOIN finds no moz_places row has no url, so leaf? answers false, it becomes a childless folder, and flatten drops it without a word. Either a type 1 row is a leaf whatever its url, or leaf? turns on something other than the url.

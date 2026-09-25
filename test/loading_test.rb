@@ -21,8 +21,8 @@ describe 'loading' do
     expect(ruby('require "browser"; print Browser::VERSION')).to match(/\A\d+\.\d+\.\d+\z/)
   end
 
-  it "resolves every helper it requires from lib alone" do
-    expect(ruby('require "browser"; print $LOADED_FEATURES.grep(/String\/wrap/).size')).to eq('1')
+  it "patches no core class, nothing under lib/Array or lib/String remaining" do
+    expect(ruby('require "browser"; print $LOADED_FEATURES.grep(%r{/lib/(Array|String)/}).size')).to eq('0')
   end
 
   it "gives the top-level names on require 'browser-classes'" do

@@ -2,18 +2,10 @@
 
 ## How this history is kept
 
-0.0.0 to 0.6.0 are the record of the library as it was: numbered revisions, directories
-with headers, which the imported commits reproduce byte for byte, dates and placeholders
-included, and which are not rewritten. Their commit messages and CHANGELOG entries are
-not that record but its narration, none of which existed before 2026: changelogger
-derived it from the headers and the diffs, and it may be regenerated or corrected toward
-the record at any time, made more accurate to it and not prettier than it. 0.6.1 onward
-is the work resumed in August 2026 in preparation for release, and that stretch was
-rewritten as it went so that each correction sits at the commit that should have made
-it rather than on top as a patch. So a commit's date there is when its version was
-made, not when everything in it was written, and each entry below describes its commit
-as it now stands. Once a version is published, the line moves to it: what is published
-is history someone else may hold, and stays.
+The revisions behind 0.0.0 to 0.6.0 are the record and are not rewritten; the entries
+describing them are narration, and may be corrected toward that record at any time.
+Once a version is published that licence ends: what is published is history someone
+else may hold, and stays.
 
 ## Capabilities, and when each arrived
 
@@ -23,16 +15,19 @@ is history someone else may hold, and stays.
 | Bookmarks and history locations as methods on each browser | 0.1.0 | 2022-12-03 |
 | One class per file; top-level names for a program that wants `Chrome` rather than `Browser::Chrome` | 0.3.0 | 2023-01-02 |
 | History read from SQLite, rendered to CSV, written to a dated file | 0.4.0 | 2023-01-02 |
-| A profile name selects the locations, and appears in the dumped filename | 0.5.0, 0.5.2 | 2023-09-23, 2023-09-24 |
-| Bookmarks read: JSON for the Chromium family, plist for Safari, SQLite for the Firefox family | 0.6.0, running from 0.6.1 | 2025-09-25, 2026-08-22 |
-| Four renderers for both bookmarks and history: CSV, JSON, plist, objects; `dump` takes a format | 0.6.0, running from 0.6.1 | 2025-09-25, 2026-08-22 |
+| A profile name selects the locations | 0.5.0 | 2023-09-23 |
+| The profile name appears in the dumped filename | 0.5.2 | 2023-09-24 |
+| Bookmarks read: JSON for the Chromium family, plist for Safari, SQLite for the Firefox family | 0.6.1 | 2026-08-22 |
+| Four renderers for both bookmarks and history: CSV, JSON, plist, objects; `dump` takes a format | 0.6.1 | 2026-08-22 |
 | Safari's binary plist read natively, via CFPropertyList | 0.6.1 | 2026-08-22 |
-| A gem: gemspec at 0.6.0, loading from 0.6.1, standing alone without RUBYLIB from 0.10.1 | 0.6.0 to 0.10.1 | 2025-09-25 to 2026-09-04 |
+| MIT licence, and a LICENSE file | 0.6.1 | 2026-08-22 |
 | `Browser.new(:name)`, any case, string or symbol; `browser-classes` for the top-level names | 0.7.0 | 2026-08-23 |
 | `dump(format:, filename:, path:)` returns the path written and writes nothing if the render fails | 0.7.0 | 2026-08-23 |
 | `readable?`, and `Browser::Unreadable` for data that is absent or locked by a running browser | 0.8.0 | 2026-08-23 |
-| `Browser::Bookmark`, a tree; folders carried; `to_objects` flattens to title, url, folder; all renderers uniform across browsers | 0.10.0 | 2026-08-25 |
-| CHANGELOG, README, MIT licence and LICENSE file | 0.9.0, 0.11.0, 0.6.1 | 2026-08-23, 2026-09-07, 2026-08-22 |
+| A CHANGELOG | 0.9.0 | 2026-08-23 |
+| `Browser::Bookmark`, a tree; folders carried; `to_objects` flattens to title, url, folder | 0.10.0 | 2026-08-25 |
+| Installable as a gem, standing alone without a RUBYLIB | 0.10.1 | 2026-09-04 |
+| A README | 0.11.0 | 2026-09-07 |
 | One set of renderers, shared by bookmarks and history | 0.12.0 | 2026-09-09 |
 | The Firefox family's default profile, the one profiles.ini names | 0.13.0 | 2026-09-09 |
 | Firefox and Tor Browser bookmarks with their folders | 0.14.0 | 2026-09-09 |
@@ -40,9 +35,7 @@ is history someone else may hold, and stays.
 
 ## Capabilities, per browser, and when each arrived
 
-The README's table, with each cell holding the version at which it became true. The
-README's table is the state at its version, and a version which changes a cell
-changes the table, so that each tag shows its own.
+The README's table, with each cell holding the version at which it became true.
 
 | browser | bookmarks | history | folders | profile named | profile default |
 |---|---|---|---|---|---|
@@ -53,20 +46,32 @@ changes the table, so that each tag shows its own.
 | Safari | 0.6.1 | 0.4.0 | 0.10.0 | none | none |
 | Tor Browser | 0.7.0 | 0.7.0 | 0.14.0 | 0.7.0 | 0.13.0 |
 
-Three cells are later than the entries suggest. Firefox and Tor Browser's bookmarks
-and history are 0.7.0: at 0.4.0 the history query was a placeholder, SELECT * FROM
-moz_bookmarks ORDER BY ? DESC, the wrong table with a question mark for the column,
-and at 0.6.1 the bookmarks query read moz_bookmarks alone, which holds titles but
-not URLs; both gained their join to moz_places, where the URLs are, at 0.7.0. Tor
-Browser's named profile is 0.7.0: the argument existed from 0.5.0 but built a path
-under Profiles where Tor Browser uses Browser, until 0.7.0 corrected it. The other
-four browsers' bookmarks are 0.6.1 rather than 0.6.0: the readers were written in
-0.6.0, but its gemspec required a VERSION file which did not exist, its constants
-resolved to the wrong classes and its constructor ignored the location it was given,
-so nothing in it ran until 0.6.1.
-
-
 ## 20260925
+
+0.16.0: ~ Browser::Rendering::CSV: Use CSV from the standard library; ~ Browser::Bookmarks.from_sqlite: Build the Bookmark object directly; ~ ROADMAP.md and TODO tidied.
+
+1. ~ Browser::Rendering::CSV#render: ::CSV.generate, the column names pushed and then each row, in place of joining Array#to_csv_row's.
+2. The escaping is no longer ours to get wrong, and the library quotes the fields which need it rather than all of them, so an ordinary row is now unquoted.
+3. Taken from the side branch at the tag history-formatter-20250923, whose History::Formatter::CSV rendered this way: its four lines, the results pair become records and column names.
+4. + browser.rb.gemspec: csv, which Rendering now requires and which is no default gem from Ruby 3.4.
+5. Found by installing the built gem into an empty GEM_HOME.
+6. - lib/Array/to_csv_row.rb, - lib/String/wrap.rb, which nothing requires now.
+7. With String#ascii_only gone at 0.15.0 the gem ships no monkeypatch at all, and lib/Array and lib/String go with them.
+8. ~ test/Browser/Rendering_test.rb: the renderings expected unquoted where a field needs no quoting.
+9. The three cases 0.15.0 added each still render and read back as they were.
+10. ~ test/loading_test.rb: that the library loads nothing from lib/Array or lib/String, in place of naming a helper which resolves from lib.
+11. ~ test/gemspec_test.rb: csv among the runtime dependencies.
+12. ~ ROADMAP.md: - whether a CSV library should do the escaping, which this answers.
+13. ~ TODO: - the monkeypatches, done; ~ the renderer, to be revisited if a better writer arrives.
+14. ~ CHANGELOG: How this history is kept, cut to the two rules.
+15. ~ the same: the capabilities table, one version and one date a row, the rows which held several split.
+16. ~ the same: - the note on cells later than the entries suggest, which 0.7.0's items already carry.
+17. ~ TODO: + readers for the bookmark tree and the profile directory; a history representation; the bookmark roots, dates, guid and separators; Tor Browser's bundle; a Browser::Error for Unreadable; the orphaned SQLite bookmark.
+18. ~ Browser::Bookmarks.from_sqlite: builds the root itself, as .from_json and .from_plist do; - sqlite_tree, its only caller.
+19. ~ ROADMAP.md: themes of work, in place of open questions.
+20. ~ the same: + cookies, a client for scraping, driving a browser; - Tor Browser's install; tags and the history record folded into the representation.
+21. ~ Browser::VERSION: /0.15.0/0.16.0/
+
 
 0.15.0: ~ Array#to_csv_row: a quote within a field doubled, and nothing stripped.
 

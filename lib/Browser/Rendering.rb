@@ -7,11 +7,10 @@
 # to_json, to_plist, dump and readable?; the class supplies results, to_objects and
 # column_names.
 
+require 'csv'
 require 'date'
 require 'json'
 require 'cfpropertylist'
-
-require 'Array/to_csv_row'
 
 require_relative './Unreadable'
 
@@ -19,7 +18,10 @@ class Browser
   module Rendering
     class CSV
       def render
-        ([@column_names] + rows).collect{|row| row.to_csv_row}.join("\n") + "\n"
+        ::CSV.generate do |csv|
+          csv << @column_names
+          rows.each{|row| csv << row}
+        end
       end
 
       private

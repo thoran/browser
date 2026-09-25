@@ -29,7 +29,9 @@ class Browser
       def from_sqlite(browser_instance)
         database = SQLite3::Database.new(browser_instance.bookmarks_location)
         column_names, *rows = database.execute2(browser_instance.class.send(:bookmarks_sql))
-        sqlite_tree(rows.collect{|row| column_names.zip(row).to_h})
+        records = rows.collect{|row| column_names.zip(row).to_h}
+        children = records.group_by{|record| record['parent']}
+        Browser::Bookmark.new(children: Array(children[0]).flat_map{|root| sqlite_children(root, children)})
       end
 
       private
@@ -50,11 +52,6 @@ class Browser
       # parent and its position within it, and the root the row with no parent.
       # The tags root is left out: a tag is a folder holding a copy of every
       # bookmark so tagged, and Firefox does not show it as one.
-      def sqlite_tree(records)
-        children = records.group_by{|record| record['parent']}
-        Browser::Bookmark.new(children: Array(children[0]).flat_map{|root| sqlite_children(root, children)})
-      end
-
       def sqlite_children(record, children)
         Array(children[record['id']]).filter_map{|child| sqlite_node(child, children)}
       end

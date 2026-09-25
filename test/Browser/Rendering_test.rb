@@ -19,22 +19,22 @@ describe Browser::Rendering do
   let(:column_names){%i{title url folder}}
 
   describe Browser::Rendering::CSV do
-    it "renders the column names, then a row per record in their order, every field quoted" do
-      expect(Browser::Rendering::CSV.new(records, column_names).render).to eq(%Q{"title","url","folder"\n"Home","https://example.com/","Bar"\n"Docs","https://example.com/docs",""\n})
+    it "renders the column names, then a row per record in their order" do
+      expect(Browser::Rendering::CSV.new(records, column_names).render).to eq(%Q{title,url,folder\nHome,https://example.com/,Bar\nDocs,https://example.com/docs,""\n})
     end
 
     it "renders the column names alone when there are no records" do
-      expect(Browser::Rendering::CSV.new([], column_names).render).to eq(%Q{"title","url","folder"\n})
+      expect(Browser::Rendering::CSV.new([], column_names).render).to eq(%Q{title,url,folder\n})
     end
 
     it "doubles a quote within a field, so the row still parses" do
       records = [{title: %Q{He said "hi", then left}, url: 'https://example.com/', folder: ''}]
       rendered = Browser::Rendering::CSV.new(records, column_names).render
-      expect(rendered).to eq(%Q{"title","url","folder"\n"He said ""hi"", then left","https://example.com/",""\n})
+      expect(rendered).to eq(%Q{title,url,folder\n"He said ""hi"", then left",https://example.com/,""\n})
       expect(::CSV.parse(rendered).last).to eq(['He said "hi", then left', 'https://example.com/', ''])
     end
 
-    it "carries a comma and a newline within a field, every field being quoted" do
+    it "carries a comma and a newline within a field, quoting it" do
       records = [{title: "one, two\nthree", url: 'https://example.com/', folder: ''}]
       rendered = Browser::Rendering::CSV.new(records, column_names).render
       expect(::CSV.parse(rendered).last).to eq(["one, two\nthree", 'https://example.com/', ''])
@@ -47,7 +47,7 @@ describe Browser::Rendering do
     end
 
     it "takes the columns in the order given, whatever the records' own" do
-      expect(Browser::Rendering::CSV.new(records, %i{url title}).render).to eq(%Q{"url","title"\n"https://example.com/","Home"\n"https://example.com/docs","Docs"\n})
+      expect(Browser::Rendering::CSV.new(records, %i{url title}).render).to eq(%Q{url,title\nhttps://example.com/,Home\nhttps://example.com/docs,Docs\n})
     end
   end
 

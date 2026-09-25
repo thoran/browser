@@ -1,23 +1,28 @@
 # browser/ROADMAP.md
 
-Jobs are in TODO. What is here is undecided: questions to be answered rather than
-work to be done, which is why they are prose and the jobs are a list.
+The discrete jobs are in TODO. What is here is the direction: themes larger than any
+one change, each with whatever about it is still undecided.
 
-## Whether a CSV library should do the escaping
+## One representation for both bookmarks and history
 
-`Array#to_csv_row` now quotes every field and doubles a quote within one, which is
-correct, but it is our own reading of RFC 4180 rather than a library's. The stdlib
-CSV would do it instead, and quote only the fields which need it, which is the
-smaller file and the more usual shape. Against that, it is a second way of writing
-a row in a library which already has one, and `to_csv_row` is used by History and
-Bookmarks alike through one renderer.
+Bookmarks have `Browser::Bookmark`, one shape whatever the browser. History has no
+representation at all: `to_objects` zips each browser's own column names to its rows,
+so Chrome yields `visit_count`, `typed_count` and `hidden` where Firefox yields none
+of them, and Safari has no title. A neutral record of url, title and a `Time` would
+make one browser's history convertible to another's, which is the stated purpose, but
+it drops what only one browser keeps. Whether that record replaces the raw columns or
+sits beside them, and whether the surplus fields are carried or lost, is undecided.
 
-The state at the tag `history-formatter-20250923` is the worked example: a
-September 2025 side branch whose `History::Formatter::CSV` renders through
-`::CSV.generate`. It was written and not taken up. It is also worth deciding
-whether quoting every field is a convention worth keeping if the escaping moves.
+Bookmarks are closer but not there. The roots have no canonical identity: Firefox's
+menu, toolbar, unfiled and mobile become display titles, where Chromium's and Safari's
+are not normalised at all, so a converted toolbar arrives as a folder named after one.
+`Browser::Bookmark` carries title, name, url and children, and drops what all three
+sources hold besides: the dates added and modified, and the guid a second import would
+need if it is not to duplicate everything. Separators are skipped. Firefox's tags root
+is left out, a tag being a folder holding a copy of every bookmark so tagged, and
+whether tags should surface at all, and if so as a column or otherwise, is open.
 
-## The Netscape bookmark file, and writing into browsers
+## Writing into browsers
 
 The original purpose, from the load file's own header, was to dump every bookmark from
 the browsers on one machine for import on another. Reading is done. The neutral format
@@ -25,6 +30,30 @@ for the other half is the Netscape bookmark file, the `<DT><A HREF=…>` HTML th
 browser on LIST both imports and exports: an export to it moves bookmarks between
 browsers without writing into any browser's own store, which is the harder and the
 riskier half, and may never be wanted.
+
+## Cookies
+
+The third thing a browser stores, and the one which would make a client useful. Both
+Chromium and Firefox keep it beside the bookmarks already found, as `Cookies` and
+`cookies.sqlite`, so a `Browser::Cookies` including `Rendering` is a small addition.
+Safari is the outlier again, keeping `Cookies.binarycookies` outside the profile in a
+format of its own. Writing them means mutating a store a running browser holds open,
+which `readable?` and `Browser::Unreadable` already model for reads.
+
+## A client, for scraping and spidering
+
+Fetching a URL, keeping a cookie jar, parsing the HTML and extracting from it. What
+this library would bring to it is the stored data beside it: a jar seeded from the
+Chrome profile already signed in is something the fetch libraries cannot offer.
+Whether it belongs here or in a gem which depends on this one is undecided, since a
+consumer who wants bookmarks should not have to acquire a parser to get them.
+
+## Driving a browser
+
+A front end to Selenium, which wants a real profile directory rather than a throwaway
+one, and 0.13.0 already resolves which profile that is and where it sits; what is in
+the way is only that the path is private. Rendering a page is not this. An engine is
+a separate project, and would consume a client rather than live here.
 
 ## Platforms beyond macOS
 
@@ -37,16 +66,3 @@ port, Safari being macOS-only.
 
 Chromium-based, so the readers already fit. Where it keeps its data, on each platform,
 is the whole question.
-
-## Tags
-
-Firefox's tags root is left out of the tree, a tag being a folder holding a copy of
-every bookmark so tagged. Whether tags should surface at all, and if so as a column on
-the flat records or otherwise, is open.
-
-## Tor Browser installed outside /Applications
-
-Its data then sits beside the application rather than under Application Support,
-which the README says and `bookmarks_location:` and `history_location:` cover. Finding
-the bundle instead would mean locating an application, which no other browser needs
-and which does not port.

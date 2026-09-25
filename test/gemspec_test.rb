@@ -28,7 +28,7 @@ describe 'browser.rb.gemspec' do
   end
 
   it "declares its runtime dependencies" do
-    expect(spec.runtime_dependencies.map(&:name).sort).to eq(%w{CFPropertyList json sqlite3})
+    expect(spec.runtime_dependencies.map(&:name).sort).to eq(%w{CFPropertyList csv json sqlite3})
   end
 
   it "declares its development dependencies" do

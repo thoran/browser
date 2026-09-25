@@ -40,6 +40,7 @@ Gem::Specification.new do |spec|
 
   spec.dependencies = %w{
     CFPropertyList
+    csv
     json
     sqlite3
   }
