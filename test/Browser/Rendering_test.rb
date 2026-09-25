@@ -10,6 +10,8 @@ require 'rspec/expectations/minitest_integration'
 lib_dir = File.expand_path(File.join(__FILE__, '..', '..', '..', 'lib'))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
+require 'csv'
+
 require 'browser'
 
 describe Browser::Rendering do
@@ -23,6 +25,25 @@ describe Browser::Rendering do
 
     it "renders the column names alone when there are no records" do
       expect(Browser::Rendering::CSV.new([], column_names).render).to eq(%Q{"title","url","folder"\n})
+    end
+
+    it "doubles a quote within a field, so the row still parses" do
+      records = [{title: %Q{He said "hi", then left}, url: 'https://example.com/', folder: ''}]
+      rendered = Browser::Rendering::CSV.new(records, column_names).render
+      expect(rendered).to eq(%Q{"title","url","folder"\n"He said ""hi"", then left","https://example.com/",""\n})
+      expect(::CSV.parse(rendered).last).to eq(['He said "hi", then left', 'https://example.com/', ''])
+    end
+
+    it "carries a comma and a newline within a field, every field being quoted" do
+      records = [{title: "one, two\nthree", url: 'https://example.com/', folder: ''}]
+      rendered = Browser::Rendering::CSV.new(records, column_names).render
+      expect(::CSV.parse(rendered).last).to eq(["one, two\nthree", 'https://example.com/', ''])
+    end
+
+    it "carries a title which is not ASCII" do
+      records = [{title: 'Café — 日本語', url: 'https://example.com/', folder: ''}]
+      rendered = Browser::Rendering::CSV.new(records, column_names).render
+      expect(::CSV.parse(rendered).last.first).to eq('Café — 日本語')
     end
 
     it "takes the columns in the order given, whatever the records' own" do

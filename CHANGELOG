@@ -1,4 +1,4 @@
-# CHANGELOG
+# browser/CHANGELOG
 
 ## How this history is kept
 
@@ -64,6 +64,27 @@ four browsers' bookmarks are 0.6.1 rather than 0.6.0: the readers were written i
 0.6.0, but its gemspec required a VERSION file which did not exist, its constants
 resolved to the wrong classes and its constructor ignored the location it was given,
 so nothing in it ran until 0.6.1.
+
+
+## 20260925
+
+0.15.0: ~ Array#to_csv_row: a quote within a field doubled, and nothing stripped.
+
+1. ~ Array#to_csv_row: a quote within a field doubled, as RFC 4180 carries one.
+2. It had wrapped each field in quotes and left a quote inside it alone, so a title holding one rendered a row no reader could parse.
+3. Present since the method arrived at 0.4.0, in History's CSV from then and in Bookmarks' from 0.12.0.
+4. No test had ever rendered a field with a quote in it.
+5. ~ the same: - String#ascii_only, which had stripped every byte outside printable ASCII.
+6. So Café rendered as Caf, and a title in Japanese as an empty field.
+7. Quoting every field is what makes a comma or a newline safe; nothing was gained by dropping the rest.
+8. - lib/String/ascii_only.rb, which nothing requires now, as lib/String/pascalcase.rb went when its last caller did.
+9. It shipped, and monkeypatched String for anyone who loaded the gem.
+10. + test/Browser/Rendering_test.rb: a quote, a comma and a newline within a field, and a title which is not ASCII.
+11. Each rendered and then read back with the stdlib CSV; all three fail against the old method.
+12. ~ test/loading_test.rb: String/wrap in place of String/ascii_only as the helper it checks resolves from lib.
+13. + ROADMAP.md: whether a CSV library should do the escaping.
+14. ~ TODO: ~ the monkeypatches, two now; + ROADMAP.md on the escaping.
+15. ~ Browser::VERSION: /0.14.6/0.15.0/
 
 
 ## 20260909

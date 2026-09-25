@@ -3,6 +3,20 @@
 Jobs are in TODO. What is here is undecided: questions to be answered rather than
 work to be done, which is why they are prose and the jobs are a list.
 
+## Whether a CSV library should do the escaping
+
+`Array#to_csv_row` now quotes every field and doubles a quote within one, which is
+correct, but it is our own reading of RFC 4180 rather than a library's. The stdlib
+CSV would do it instead, and quote only the fields which need it, which is the
+smaller file and the more usual shape. Against that, it is a second way of writing
+a row in a library which already has one, and `to_csv_row` is used by History and
+Bookmarks alike through one renderer.
+
+The state at the tag `history-formatter-20250923` is the worked example: a
+September 2025 side branch whose `History::Formatter::CSV` renders through
+`::CSV.generate`. It was written and not taken up. It is also worth deciding
+whether quoting every field is a convention worth keeping if the escaping moves.
+
 ## The Netscape bookmark file, and writing into browsers
 
 The original purpose, from the load file's own header, was to dump every bookmark from

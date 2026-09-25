@@ -22,7 +22,7 @@ describe 'loading' do
   end
 
   it "resolves every helper it requires from lib alone" do
-    expect(ruby('require "browser"; print $LOADED_FEATURES.grep(/String\/ascii_only/).size')).to eq('1')
+    expect(ruby('require "browser"; print $LOADED_FEATURES.grep(/String\/wrap/).size')).to eq('1')
   end
 
   it "gives the top-level names on require 'browser-classes'" do

@@ -1,3 +1,3 @@
 # browser/TODO
 
-- Browser::Rendering::CSV: lib/Array/to_csv_row.rb, lib/String/wrap.rb and lib/String/ascii_only.rb ship now and monkeypatch Array and String for anyone who loads them. A better writer would take all three with it, and what survives of them elsewhere goes under Thoran::.
+- Browser::Rendering::CSV: lib/Array/to_csv_row.rb and lib/String/wrap.rb ship now and monkeypatch Array and String for anyone who loads them. A better writer would take both with it, and what survives of them elsewhere goes under Thoran::. See ROADMAP.md on whether a library should do the escaping.
