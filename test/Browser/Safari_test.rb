@@ -42,6 +42,12 @@ describe Browser::Safari do
       end
     end
 
+    describe '.profile_path' do
+      it "has no profile path, Safari having no profiles" do
+        expect(subject.profile_path).to be_nil
+      end
+    end
+
     describe ".bookmarks_sql" do
       it "returns the bookmarks sql" do
         expect(subject.send(:bookmarks_sql)).to be_nil
@@ -90,6 +96,12 @@ describe Browser::Safari do
       end
     end
 
+    describe "#profile_path" do
+      it "has no profile path, Safari having no profiles" do
+        expect(subject.profile_path).to be_nil
+      end
+    end
+
     let(:expected_bookmarks) do
       [
         {title: 'Apple', url: 'https://www.apple.com/', folder: 'BookmarksBar'},
@@ -115,6 +127,11 @@ describe Browser::Safari do
 
       it "returns the bookmarks" do
         expect(subject.bookmarks.to_objects).to eq(expected_bookmarks)
+      end
+
+      it "returns the tree, whose children are the browser's roots" do
+        expect(subject.bookmarks.tree).to be_a(Browser::Bookmark)
+        expect(subject.bookmarks.tree.children.collect(&:title)).to eq(['BookmarksBar', 'BookmarksMenu', 'Home \ Anthropic'])
       end
     end
 

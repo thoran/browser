@@ -89,6 +89,13 @@ class Browser
       end
     end
 
+    # The tree as the browser keeps it: a titleless root whose children are the
+    # browser's own roots.  to_objects flattens it and keeps only the leaves, so the
+    # folders, and Bookmark#name with them, are reachable nowhere else.
+    def tree
+      results
+    end
+
     def to_objects
       results.flatten
     end

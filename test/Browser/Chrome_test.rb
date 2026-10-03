@@ -44,6 +44,14 @@ describe Browser::Chrome do
       end
     end
 
+    describe '.profile_path' do
+      let(:expected_profile_path){File.expand_path('~/Library/Application Support/Google/Chrome/Default')}
+
+      it "contains the correct profile path" do
+        expect(subject.profile_path).to eq(expected_profile_path)
+      end
+    end
+
     describe ".bookmarks_sql" do
       it "returns the bookmarks sql" do
         expect(subject.send(:bookmarks_sql)).to be_nil
@@ -90,6 +98,12 @@ describe Browser::Chrome do
     describe "#name" do
       it "returns name" do
         expect(subject.name).to eq(browser_name)
+      end
+    end
+
+    describe "#profile_path" do
+      it "returns the directory the profile sits in" do
+        expect(subject.profile_path).to eq(File.expand_path('~/Library/Application Support/Google/Chrome/Default'))
       end
     end
 

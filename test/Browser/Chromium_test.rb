@@ -44,6 +44,18 @@ describe Browser::Chromium do
       end
     end
 
+    describe '.profile_path' do
+      let(:expected_profile_path){File.expand_path('~/Library/Application Support/Chromium/Default')}
+
+      it "contains the correct profile path" do
+        expect(subject.profile_path).to eq(expected_profile_path)
+      end
+
+      it "takes a named profile in place of the default" do
+        expect(subject.profile_path(profile_name: 'Profile 1')).to eq(File.expand_path('~/Library/Application Support/Chromium/Profile 1'))
+      end
+    end
+
     describe ".bookmarks_sql" do
       it "returns the bookmarks sql" do
         expect(subject.send(:bookmarks_sql)).to be_nil
@@ -93,6 +105,12 @@ describe Browser::Chromium do
       end
     end
 
+    describe "#profile_path" do
+      it "returns the directory the profile sits in" do
+        expect(subject.profile_path).to eq(File.expand_path('~/Library/Application Support/Chromium/Default'))
+      end
+    end
+
     let(:expected_bookmarks) do
       [
         {title: 'Home', url: 'https://www.chromium.org/chromium-projects/', folder: 'Bookmarks Bar'},
@@ -106,6 +124,16 @@ describe Browser::Chromium do
 
       it "returns the bookmarks" do
         expect(subject.bookmarks.to_objects).to eq(expected_bookmarks)
+      end
+
+      it "returns the tree, whose children are the browser's roots" do
+        expect(subject.bookmarks.tree).to be_a(Browser::Bookmark)
+        expect(subject.bookmarks.tree.children.collect(&:title)).to eq(['Bookmarks Bar', 'Other Bookmarks', 'Mobile Bookmarks'])
+      end
+
+      it "keeps in the tree the folders to_objects drops, empty ones among them" do
+        expect(subject.bookmarks.tree.children.count(&:folder?)).to eq(3)
+        expect(subject.bookmarks.to_objects.length).to eq(1)
       end
     end
 

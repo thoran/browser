@@ -1,12 +1,5 @@
 # browser/CHANGELOG
 
-## How this history is kept
-
-The revisions behind 0.0.0 to 0.6.0 are the record and are not rewritten; the entries
-describing them are narration, and may be corrected toward that record at any time.
-Once a version is published that licence ends: what is published is history someone
-else may hold, and stays.
-
 ## Capabilities, and when each arrived
 
 | capability | version | date |
@@ -31,6 +24,8 @@ else may hold, and stays.
 | One set of renderers, shared by bookmarks and history | 0.12.0 | 2026-09-09 |
 | The Firefox family's default profile, the one profiles.ini names | 0.13.0 | 2026-09-09 |
 | Firefox and Tor Browser bookmarks with their folders | 0.14.0 | 2026-09-09 |
+| `Browser::Bookmarks#tree`, the bookmarks as a tree, folders and all | 0.17.0 | 2026-10-03 |
+| `profile_path`, the directory a profile sits in | 0.17.0 | 2026-10-03 |
 
 
 ## Capabilities, per browser, and when each arrived
@@ -45,6 +40,29 @@ The README's table, with each cell holding the version at which it became true.
 | Firefox | 0.7.0 | 0.7.0 | 0.14.0 | 0.5.0 | 0.13.0 |
 | Safari | 0.6.1 | 0.4.0 | 0.10.0 | none | none |
 | Tor Browser | 0.7.0 | 0.7.0 | 0.14.0 | 0.7.0 | 0.13.0 |
+
+## 20261003
+
+0.17.0: + Browser::Bookmarks#tree, the bookmark tree; + Browser::Base#profile_path, the profile directory.
+
+1. + Browser::Bookmarks#tree: the root Browser::Bookmark, which results holds and nothing outside could reach.
+2. to_objects flattens the tree to its leaves, so no folder was readable anywhere.
+3. Browser::Bookmark#name goes with them, unreachable since it arrived at 0.14.0 for writing back into a browser.
+4. + Browser::Base.profile_path(profile_name:): profiles_path joined to the profile name.
+5. + Browser::Base#profile_path: the same for an instance, holding nothing, profile_name having memoised the lookup.
+6. Safari needs no override of its own: its profiles_path is nil, and a nil profiles_path is a nil profile_path.
+7. A family implementing neither root_path nor profiles_path raises NotImplementedError through the guard it already carries.
+8. + test/Browser/Brave_test.rb, Chrome_test.rb, Chromium_test.rb, Firefox_test.rb, Safari_test.rb, TorBrowser_test.rb: .profile_path and #profile_path.
+9. + test/Browser/Chromium_test.rb, Safari_test.rb, Firefox_test.rb: #tree, one test per format read.
+10. ~ test/Browser/Firefox_test.rb: + #name reached through the tree, Firefox's roots being the titles which differ from their names.
+11. ~ README.md: + tree and profile_path.
+12. ~ ROADMAP.md: driving a browser, with the profile path no longer in the way.
+13. ~ ROADMAP.md: + the require path.
+14. ~ TODO: - the bookmark tree and the profile directory, both done.
+15. ~ TODO: + the gemspec's dependencies derived from lib's requires.
+16. ~ CHANGELOG: - How this history is kept.
+17. ~ Browser::VERSION: /0.16.0/0.17.0/
+
 
 ## 20260925
 
