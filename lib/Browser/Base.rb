@@ -10,6 +10,15 @@ class Browser
       def default_profile_name
         self::DEFAULT_PROFILE_NAME
       end
+
+      # The directory the profile sits in, which a Selenium front end wants in place
+      # of a throwaway one.  A browser which keeps no profiles has no such directory,
+      # and says so with nil rather than with a path.
+      def profile_path(profile_name: nil)
+        return nil unless profiles_path
+        profile_name ||= default_profile_name
+        File.expand_path("#{profiles_path}/#{profile_name}")
+      end
     end
 
     def bookmarks
@@ -33,6 +42,12 @@ class Browser
 
     def history_location
       @history_location ||= self.class.history_location(profile_name: profile_name)
+    end
+
+    # Derived from the profile name alone, which has done any looking up already, and
+    # never given, so there is nothing here to hold on to.
+    def profile_path
+      self.class.profile_path(profile_name: profile_name)
     end
 
     def name

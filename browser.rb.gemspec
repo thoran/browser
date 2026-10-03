@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.version = Browser::VERSION
 
   spec.summary = "Read web browser bookmarks and history with Ruby."
-  spec.description = "Read the bookmarks and history of the web browsers on a machine, Brave, Chrome, Chromium, Firefox, Safari and Tor Browser, and render them to CSV, JSON or a property list.  Bookmarks come through as one representation whatever the browser; history as each browser stores it."
+  spec.description = "Read the bookmarks and history for Brave, Chrome, Chromium, Firefox, Safari and Tor Browser, and render them to CSV, JSON or a property list."
 
   spec.author = 'thoran'
   spec.email = 'code@thoran.com'

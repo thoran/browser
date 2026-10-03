@@ -89,6 +89,14 @@ describe Browser::Firefox do
       end
     end
 
+    describe '.profile_path' do
+      let(:expected_profile_path){File.expand_path('~/Library/Application Support/Firefox/Profiles/abcd1234.default-release')}
+
+      it "contains the correct profile path" do
+        expect(subject.profile_path(profile_name: profile_name)).to eq(expected_profile_path)
+      end
+    end
+
     describe ".bookmarks_sql" do
       it "returns the bookmarks sql" do
         expect(subject.send(:bookmarks_sql)).to eq(expected_bookmarks_sql)
@@ -136,6 +144,12 @@ describe Browser::Firefox do
       end
     end
 
+    describe "#profile_path" do
+      it "returns the directory the profile sits in" do
+        expect(subject.profile_path).to eq(File.expand_path('~/Library/Application Support/Firefox/Profiles/abcd1234.default-release'))
+      end
+    end
+
     let(:expected_bookmarks) do
       [
         {title: 'Get Help', url: 'https://support.mozilla.org/products/firefox', folder: 'Bookmarks Menu/Mozilla Firefox'},
@@ -153,6 +167,15 @@ describe Browser::Firefox do
 
       it "returns the bookmarks" do
         expect(subject.bookmarks.to_objects).to eq(expected_bookmarks)
+      end
+
+      it "returns the tree, whose children are the browser's roots" do
+        expect(subject.bookmarks.tree).to be_a(Browser::Bookmark)
+        expect(subject.bookmarks.tree.children.collect(&:title)).to eq(['Bookmarks Menu', 'Bookmarks Toolbar', 'Other Bookmarks', 'Mobile Bookmarks'])
+      end
+
+      it "reaches Bookmark#name, which the tree alone carries" do
+        expect(subject.bookmarks.tree.children.collect(&:name)).to eq(%w{menu toolbar unfiled mobile})
       end
     end
 

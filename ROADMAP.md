@@ -51,9 +51,10 @@ consumer who wants bookmarks should not have to acquire a parser to get them.
 ## Driving a browser
 
 A front end to Selenium, which wants a real profile directory rather than a throwaway
-one, and 0.13.0 already resolves which profile that is and where it sits; what is in
-the way is only that the path is private. Rendering a page is not this. An engine is
-a separate project, and would consume a client rather than live here.
+one. 0.13.0 resolves which profile that is and where it sits, and 0.17.0 opens the
+path as `profile_path`, so what is left is the front end itself. Rendering a page is
+not this. An engine is a separate project, and would consume a client rather than
+live here.
 
 ## Platforms beyond macOS
 
@@ -66,3 +67,15 @@ port, Safari being macOS-only.
 
 Chromium-based, so the readers already fit. Where it keeps its data, on each platform,
 is the whole question.
+
+## The require path
+
+Both this gem and Nando Vieira's `browser`, the user-agent parser, install a
+`lib/browser.rb`, so `require 'browser'` resolves by load-path order in a project
+which depends on both, and a scraper is the sort of program that would want both.
+That gem is current, 6.2.0 in December 2024, so the clash is with something common.
+`require 'browser-classes'` is unambiguous, reaching this gem through
+`require_relative`, but it also defines six top-level names, so it is not a neutral
+way in. A second entry point under a namespace, say `thoran/browser`, would settle
+it. 0.16.0 is published with the plain name, so moving it is now a breaking change
+rather than a free choice.

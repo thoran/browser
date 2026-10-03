@@ -39,9 +39,11 @@ require 'browser'
 
 chrome = Browser.new(:chrome)
 chrome.bookmarks.to_objects   # => [{title:, url:, folder:}, ...]
+chrome.bookmarks.tree         # => Browser::Bookmark, the folders and all
 chrome.bookmarks.to_csv       # title,url,folder rows
 chrome.bookmarks.to_json
 chrome.history.to_objects
+chrome.profile_path           # => the directory the profile sits in
 ```
 
 Name a browser by string or symbol, in any case:
@@ -66,6 +68,14 @@ Chrome.new.bookmarks
 The renderers are `to_objects` (an array of `{title:, url:, folder:}`), `to_csv`,
 `to_json` and `to_plist`. `dump(format:, path:, filename:)` writes one to a file and
 returns the path. `readable?` says whether the data can be read right now.
+
+Underneath the renderers, `bookmarks.tree` is the bookmarks as `Browser::Bookmark`:
+a titleless root whose children are the browser's own roots, each folder holding its
+children. The renderers flatten that to leaves and drop the folders, so the tree is
+where a folder, or `Bookmark#name`, is to be had.
+
+`profile_path` is the directory the profile sits in, which a Selenium front end wants
+in place of a throwaway one. Safari, having no profiles, answers `nil`.
 
 ## Capabilities
 
