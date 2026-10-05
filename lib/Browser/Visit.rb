@@ -5,8 +5,9 @@
 # read: a url, a title and a time.  For Firefox and Safari a row is one visit; for
 # the Chromium family it is a url and the last visit to it, so a page visited three
 # times is one Visit there and three elsewhere.  The browser's own row stays as
-# attributes, since Chromium's visit_count, typed_count and hidden have no
-# counterpart in the others, and Safari stores no title at all.
+# attributes, under the names that browser gave it: all three keep a visit count,
+# Firefox alone a guid and a description, and Safari alone whether the page loaded
+# and with what status.
 
 class Browser
   class Visit

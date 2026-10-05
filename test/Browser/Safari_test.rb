@@ -15,7 +15,7 @@ require 'browser'
 describe Browser::Safari do
   let(:bookmarks_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Safari_bookmarks.plist")}
   let(:history_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/Safari_history.sqlite")}
-  let(:expected_history_sql){'SELECT history_items.id, history_items.url, history_visits.visit_time FROM history_items LEFT JOIN history_visits WHERE history_items.id = history_visits.history_item ORDER BY visit_time DESC;'}
+  let(:expected_history_sql){'SELECT history_visits.id, history_items.url, history_visits.title, history_visits.visit_time, history_visits.load_successful, history_visits.http_non_get, history_visits.synthesized, history_visits.redirect_source, history_visits.redirect_destination, history_visits.origin, history_items.visit_count, history_items.status_code FROM history_visits LEFT JOIN history_items ON history_visits.history_item = history_items.id ORDER BY history_visits.visit_time DESC;'}
 
   describe 'DEFAULT_PROFILE_NAME' do
     it "has no default profile name" do
@@ -67,8 +67,8 @@ describe Browser::Safari do
     let(:browser_name){'Safari'}
     let(:expected_history) do
       [
-        {url: 'https://www.apple.com/', title: nil, visited_at: Time.utc(2025, 9, 25)},
-        {url: 'https://support.apple.com/', title: nil, visited_at: Time.utc(2025, 9, 24, 23, 40)},
+        {url: 'https://www.apple.com/', title: 'Apple', visited_at: Time.utc(2025, 9, 25)},
+        {url: 'https://support.apple.com/', title: 'Apple Support', visited_at: Time.utc(2025, 9, 24, 23, 40)},
       ]
     end
 
@@ -144,12 +144,21 @@ describe Browser::Safari do
         expect(subject.history.to_objects).to eq(expected_history)
       end
 
-      it "returns the visits, with no title, Safari storing none" do
+      it "returns the visits, with the title history_visits holds" do
         visit = subject.history.visits.first
         expect(visit).to be_a(Browser::Visit)
-        expect(visit.title).to be_nil
+        expect(visit.title).to eq('Apple')
         expect(visit.visited_at).to eq(Time.utc(2025, 9, 25))
         expect(visit.attributes['visit_time']).to eq(780451200.0)
+      end
+
+      it "carries everything meaningful either table holds, and none of the bookkeeping" do
+        attributes = subject.history.visits.first.attributes
+        expect(attributes['load_successful']).to eq(1)
+        expect(attributes['status_code']).to eq(200)
+        expect(attributes['visit_count']).to eq(3)
+        expect(attributes['origin']).to eq(0)
+        expect(attributes.keys).to_not include('history_item', 'domain_expansion', 'daily_visit_counts', 'visit_count_score', 'score', 'generation', 'attributes')
       end
     end
 

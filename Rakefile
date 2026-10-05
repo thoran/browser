@@ -118,7 +118,18 @@ namespace :fixtures do
       )
     end
 
-    db.execute('INSERT INTO moz_historyvisits (id, place_id, visit_date, visit_type) VALUES (?, ?, ?, ?)', [1, 5, added + 152741667, 1])
+    # Place 5 is the one with history, so it carries what a visit holds besides the
+    # url and the title, which Browser::Visit keeps as attributes.
+    db.execute(
+      'UPDATE moz_places SET visit_count = ?, typed = ?, last_visit_date = ?, guid = ?, description = ?, site_name = ? WHERE id = ?',
+      [1, 1, added + 152741667, 'Ab1cD2eF3gH4', 'Recommended extensions for Firefox', 'addons.mozilla.org', 5]
+    )
+
+    # source 0 is a local visit, 1 a synced one; visit_type 1 is a followed link.
+    db.execute(
+      'INSERT INTO moz_historyvisits (id, place_id, visit_date, visit_type, session, source) VALUES (?, ?, ?, ?, ?, ?)',
+      [1, 5, added + 152741667, 1, 1, 0]
+    )
     db.close
     puts "Wrote #{path} (#{File.size(path)} bytes)."
   end
@@ -141,7 +152,8 @@ namespace :fixtures do
         weekly_visit_counts BLOB NULL,
         autocomplete_triggers BLOB NULL,
         should_recompute_derived_visit_counts INTEGER NOT NULL,
-        visit_count_score INTEGER NOT NULL
+        visit_count_score INTEGER NOT NULL,
+        status_code INTEGER NOT NULL DEFAULT 0
       );
       CREATE TABLE history_visits (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -161,12 +173,12 @@ namespace :fixtures do
       CREATE INDEX history_visits_history_item_index ON history_visits (history_item);
     SQL
     [
-      [1, 'https://www.apple.com/', 'apple', 3, 1],
-      [2, 'https://support.apple.com/', 'support.apple', 1, 0],
-    ].each do |id, url, domain, visit_count, score|
+      [1, 'https://www.apple.com/', 'apple', 3, 1, 200],
+      [2, 'https://support.apple.com/', 'support.apple', 1, 0, 200],
+    ].each do |id, url, domain, visit_count, score, status_code|
       db.execute(
-        'INSERT INTO history_items (id, url, domain_expansion, visit_count, daily_visit_counts, should_recompute_derived_visit_counts, visit_count_score) VALUES (?, ?, ?, ?, ?, 0, ?)',
-        [id, url, domain, visit_count, SQLite3::Blob.new(''), score]
+        'INSERT INTO history_items (id, url, domain_expansion, visit_count, daily_visit_counts, should_recompute_derived_visit_counts, visit_count_score, status_code) VALUES (?, ?, ?, ?, ?, 0, ?, ?)',
+        [id, url, domain, visit_count, SQLite3::Blob.new(''), score, status_code]
       )
     end
     # visit_time is seconds since 2001-01-01, which is Core Data's epoch.

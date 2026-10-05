@@ -26,7 +26,7 @@ describe Browser::Visit do
       expect(visit.to_h).to eq({url: 'https://example.com/', title: 'Home', visited_at: visited_at})
     end
 
-    it "carries a nil title, which Safari stores none of" do
+    it "carries a nil title where the browser gave none" do
       expect(Browser::Visit.new(url: 'https://example.com/', visited_at: visited_at).to_h[:title]).to be_nil
     end
   end

@@ -28,6 +28,8 @@
 | `profile_path`, the directory a profile sits in | 0.17.0 | 2026-10-03 |
 | `Browser::Visit`, history as one record whatever the browser, the three epochs converted to a `Time` | 0.18.0 | 2026-10-05 |
 | `Browser::History#visits`, the records, each carrying the browser's own columns besides | 0.18.0 | 2026-10-05 |
+| Every meaningful history column carried, each browser's own bookkeeping left out | 0.19.0 | 2026-10-06 |
+| Safari's history titles, which its query had never asked for | 0.19.0 | 2026-10-06 |
 
 
 ## Capabilities, per browser, and when each arrived
@@ -42,6 +44,31 @@ The README's table, with each cell holding the version at which it became true.
 | Firefox | 0.7.0 | 0.7.0 | 0.14.0 | 0.5.0 | 0.13.0 |
 | Safari | 0.6.1 | 0.4.0 | 0.10.0 | none | none |
 | Tor Browser | 0.7.0 | 0.7.0 | 0.14.0 | 0.7.0 | 0.13.0 |
+
+## 20261006
+
+0.19.0: ~ the history queries: carry everything meaningful, the bookkeeping left out; + Safari's titles.
+
+1. ~ Browser::Safari.history_sql: + history_visits.title, which Safari has held all along and the query had never asked for.
+2. So Browser::Visit#title is no longer nil for Safari, and to_objects, to_csv, to_json and to_plist carry it.
+3. 0.18.0 shipped the claim that Safari stores no title, in Browser::Visit's header and in README.md, and it was never so.
+4. ~ the same: + load_successful, http_non_get, synthesized, redirect_source, redirect_destination, origin, visit_count and status_code.
+5. ~ the same: history_visits.id in place of history_items.id, a row being a visit rather than an item.
+6. ~ the same: the join driven from history_visits, ON rather than a WHERE, so that a visit whose item is gone arrives with no url in place of vanishing.
+7. ~ Browser::FirefoxBased.history_sql: + from_visit, visit_type, session, source, visit_count, hidden, typed, last_visit_date, guid, description, preview_image_url and site_name, four columns of twenty-seven becoming sixteen.
+8. - from both: the internal keys, the index helpers, the opaque blobs, the ranking scores and their recalculation flags, which are each browser's own bookkeeping and tell a consumer nothing.
+9. Browser::ChromiumBased.history_sql is unchanged, SELECT * over urls carrying all seven of its columns, every one of them meaningful.
+10. to_objects is untouched throughout, so the renderers carry the same three fields and the detail rides on attributes.
+11. ~ Browser::Visit: the header, which had said Chromium's visit_count, typed_count and hidden have no counterpart in the others; moz_places holds visit_count, hidden and typed, and the query had not asked.
+12. ~ Rakefile: + status_code to the Safari fixture's history_items, which the real table has and the fixture lacked.
+13. ~ the same: the Firefox fixture's place carrying a visit_count, typed, last_visit_date, guid, description and site_name, and its visit a session and a source.
+14. ~ test/fixtures/Safari_history.sqlite, FirefoxBased_places.sqlite rebuilt.
+15. ~ test/Browser/Safari_test.rb: the history expected with its titles; + the carried detail and the bookkeeping left out.
+16. ~ test/Browser/Firefox_test.rb, TorBrowser_test.rb: the widened sql; + the same.
+17. ~ test/Browser/Visit_test.rb: a nil title is a browser which gave none, not Safari.
+18. ~ README.md: what attributes carries, in place of the claim about Safari's titles.
+19. ~ Browser::VERSION: /0.18.0/0.19.0/
+
 
 ## 20261005
 

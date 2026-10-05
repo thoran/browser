@@ -79,8 +79,10 @@ where a folder, or `Bookmark#name`, is to be had.
 `visited_at`, which is a `Time` in UTC, with the browser's own row kept on
 `attributes`. The three browsers count from three epochs — Chromium in microseconds
 from 1601, Firefox in microseconds from 1970, Safari in seconds from 2001 — and all
-three arrive converted. Safari stores no title with its history, so that field is nil
-there.
+three arrive converted. `attributes` carries everything else the browser holds which
+a consumer could want, leaving out its internal keys, index helpers and ranking
+scores: Firefox's `guid`, `description` and `visit_type`, Safari's `load_successful`
+and `status_code`, the Chromium family's `typed_count`.
 
 `profile_path` is the directory the profile sits in, which a Selenium front end wants
 in place of a throwaway one. Safari, having no profiles, answers `nil`.

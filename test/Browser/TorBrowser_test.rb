@@ -15,7 +15,7 @@ require 'browser'
 describe Browser::TorBrowser do
   let(:places_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/FirefoxBased_places.sqlite")}
   let(:expected_bookmarks_sql){'SELECT moz_bookmarks.id, moz_bookmarks.parent, moz_bookmarks.position, moz_bookmarks.type, moz_bookmarks.title, moz_bookmarks.guid, moz_places.url FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id ORDER BY moz_bookmarks.parent, moz_bookmarks.position;'}
-  let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
+  let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date, moz_historyvisits.from_visit, moz_historyvisits.visit_type, moz_historyvisits.session, moz_historyvisits.source, moz_places.visit_count, moz_places.hidden, moz_places.typed, moz_places.last_visit_date, moz_places.guid, moz_places.description, moz_places.preview_image_url, moz_places.site_name FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
 
   describe '.default_profile_name' do
     let(:profiles_ini){"[Profile0]\nName=default\nIsRelative=1\nPath=abcd1234.default\nDefault=1\n\n[General]\nStartWithLastProfile=1\nVersion=2\n"}

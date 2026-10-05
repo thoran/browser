@@ -18,7 +18,7 @@ require 'browser'
 describe Browser::Firefox do
   let(:places_fixtures_location){File.expand_path("#{__FILE__}/../../fixtures/FirefoxBased_places.sqlite")}
   let(:expected_bookmarks_sql){'SELECT moz_bookmarks.id, moz_bookmarks.parent, moz_bookmarks.position, moz_bookmarks.type, moz_bookmarks.title, moz_bookmarks.guid, moz_places.url FROM moz_bookmarks LEFT JOIN moz_places ON moz_bookmarks.fk = moz_places.id ORDER BY moz_bookmarks.parent, moz_bookmarks.position;'}
-  let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
+  let(:expected_history_sql){'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date, moz_historyvisits.from_visit, moz_historyvisits.visit_type, moz_historyvisits.session, moz_historyvisits.source, moz_places.visit_count, moz_places.hidden, moz_places.typed, moz_places.last_visit_date, moz_places.guid, moz_places.description, moz_places.preview_image_url, moz_places.site_name FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'}
 
   describe '.default_profile_name' do
     let(:profiles_ini) do
@@ -193,6 +193,17 @@ describe Browser::Firefox do
         expect(visit).to be_a(Browser::Visit)
         expect(visit.visited_at).to eq(Time.utc(2026, 8, 23, 1, 39, 12) + Rational(741_667, 1_000_000))
         expect(visit.attributes['visit_date']).to eq(1787449152741667)
+      end
+
+      it "carries everything meaningful either table holds, and none of the bookkeeping" do
+        attributes = subject.history.visits.first.attributes
+        expect(attributes['guid']).to eq('Ab1cD2eF3gH4')
+        expect(attributes['description']).to eq('Recommended extensions for Firefox')
+        expect(attributes['site_name']).to eq('addons.mozilla.org')
+        expect(attributes['visit_type']).to eq(1)
+        expect(attributes['source']).to eq(0)
+        expect(attributes['visit_count']).to eq(1)
+        expect(attributes.keys).to_not include('place_id', 'rev_host', 'url_hash', 'frecency')
       end
     end
 
