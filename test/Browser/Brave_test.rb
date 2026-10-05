@@ -72,8 +72,8 @@ describe Browser::Brave do
     let(:default_profile_name){'Default'}
     let(:expected_history) do
       [
-        {'id' => 1, 'url' => 'https://www.chromium.org/chromium-projects/', 'title' => 'Home', 'visit_count' => 3, 'typed_count' => 1, 'last_visit_time' => 13403232000000000, 'hidden' => 0},
-        {'id' => 2, 'url' => 'chrome://welcome/', 'title' => 'Welcome', 'visit_count' => 1, 'typed_count' => 0, 'last_visit_time' => 13403231000000000, 'hidden' => 0},
+        {url: 'https://www.chromium.org/chromium-projects/', title: 'Home', visited_at: Time.utc(2025, 9, 25)},
+        {url: 'chrome://welcome/', title: 'Welcome', visited_at: Time.utc(2025, 9, 24, 23, 43, 20)},
       ]
     end
 
@@ -129,7 +129,7 @@ describe Browser::Brave do
       end
 
       it "returns the history" do
-        expect(subject.history.to_json).to eq(expected_history.to_json)
+        expect(subject.history.to_objects).to eq(expected_history)
       end
     end
 

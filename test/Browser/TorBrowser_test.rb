@@ -73,7 +73,7 @@ describe Browser::TorBrowser do
     let(:browser_name){'TorBrowser'}
     let(:expected_history) do
       [
-        {'id' => 1, 'url' => 'https://addons.mozilla.org/en-US/firefox/', 'title' => 'Extension Starter Pack', 'visit_date' => 1787449152741667},
+        {url: 'https://addons.mozilla.org/en-US/firefox/', title: 'Extension Starter Pack', visited_at: Time.utc(2026, 8, 23, 1, 39, 12) + Rational(741_667, 1_000_000)},
       ]
     end
 
@@ -133,7 +133,7 @@ describe Browser::TorBrowser do
       end
 
       it "returns the history" do
-        expect(subject.history.to_json).to eq(expected_history.to_json)
+        expect(subject.history.to_objects).to eq(expected_history)
       end
     end
 

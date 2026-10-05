@@ -116,7 +116,7 @@ describe Browser::Firefox do
     let(:browser_name){'Firefox'}
     let(:expected_history) do
       [
-        {'id' => 1, 'url' => 'https://addons.mozilla.org/en-US/firefox/', 'title' => 'Extension Starter Pack', 'visit_date' => 1787449152741667},
+        {url: 'https://addons.mozilla.org/en-US/firefox/', title: 'Extension Starter Pack', visited_at: Time.utc(2026, 8, 23, 1, 39, 12) + Rational(741_667, 1_000_000)},
       ]
     end
 
@@ -185,7 +185,14 @@ describe Browser::Firefox do
       end
 
       it "returns the history" do
-        expect(subject.history.to_json).to eq(expected_history.to_json)
+        expect(subject.history.to_objects).to eq(expected_history)
+      end
+
+      it "returns the visits, converting Firefox's microseconds from 1970" do
+        visit = subject.history.visits.first
+        expect(visit).to be_a(Browser::Visit)
+        expect(visit.visited_at).to eq(Time.utc(2026, 8, 23, 1, 39, 12) + Rational(741_667, 1_000_000))
+        expect(visit.attributes['visit_date']).to eq(1787449152741667)
       end
     end
 

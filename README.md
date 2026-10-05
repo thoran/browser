@@ -4,8 +4,8 @@
 
 Read the bookmarks and history of the web browsers on a machine — Brave, Chrome,
 Chromium, Firefox, Safari and Tor Browser — and render them to CSV, JSON or a
-property list.  Bookmarks come through as one common representation whatever the
-browser; history as each browser stores it.
+property list.  Bookmarks and history each come through as one common representation
+whatever the browser.
 
 ## Installation
 
@@ -42,7 +42,8 @@ chrome.bookmarks.to_objects   # => [{title:, url:, folder:}, ...]
 chrome.bookmarks.tree         # => Browser::Bookmark, the folders and all
 chrome.bookmarks.to_csv       # title,url,folder rows
 chrome.bookmarks.to_json
-chrome.history.to_objects
+chrome.history.to_objects     # => [{url:, title:, visited_at:}, ...]
+chrome.history.visits         # => Browser::Visit, the browser's own columns too
 chrome.profile_path           # => the directory the profile sits in
 ```
 
@@ -74,6 +75,13 @@ a titleless root whose children are the browser's own roots, each folder holding
 children. The renderers flatten that to leaves and drop the folders, so the tree is
 where a folder, or `Bookmark#name`, is to be had.
 
+`history.visits` is the history as `Browser::Visit`: a `url`, a `title` and
+`visited_at`, which is a `Time` in UTC, with the browser's own row kept on
+`attributes`. The three browsers count from three epochs — Chromium in microseconds
+from 1601, Firefox in microseconds from 1970, Safari in seconds from 2001 — and all
+three arrive converted. Safari stores no title with its history, so that field is nil
+there.
+
 `profile_path` is the directory the profile sits in, which a Selenium front end wants
 in place of a throwaway one. Safari, having no profiles, answers `nil`.
 
@@ -92,6 +100,11 @@ in place of a throwaway one. Safari, having no profiles, answers `nil`.
 
 - **macOS only, for now.** Every location is a macOS path; Linux and Windows are on
   the Todo.
+- **A Chromium row is a URL, not a visit.** Chromium's history table holds one row per
+  URL, with a visit count and the time it was last visited, where Firefox and Safari
+  hold one row per visit. So a page visited three times is one record for Chrome,
+  Chromium and Brave and three for the others, and their `visited_at` is the last
+  visit rather than a visit. `attributes` carries `visit_count` for the family.
 - **A running browser locks its database.** History, and Firefox's bookmarks, are
   read from SQLite, which the browser locks while it is open — so reading a browser
   you are using raises `Browser::Unreadable`. Ask `readable?` first, or quit it.

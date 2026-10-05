@@ -5,6 +5,8 @@ require_relative './Base'
 
 class Browser
   class FirefoxBased < Base
+    HISTORY_EPOCH = Time.utc(1970) # Firefox counts microseconds from here.
+
     class << self
       def bookmarks_location(profile_name: nil)
         profile_name ||= default_profile_name
@@ -80,6 +82,10 @@ class Browser
 
       def history_sql
         'SELECT moz_historyvisits.id, moz_places.url, moz_places.title, moz_historyvisits.visit_date FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id = moz_places.id ORDER BY moz_historyvisits.visit_date DESC;'
+      end
+
+      def visited_at(row)
+        HISTORY_EPOCH + Rational(row['visit_date'], 1_000_000)
       end
     end
   end

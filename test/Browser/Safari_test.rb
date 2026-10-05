@@ -67,8 +67,8 @@ describe Browser::Safari do
     let(:browser_name){'Safari'}
     let(:expected_history) do
       [
-        {'id' => 1, 'url' => 'https://www.apple.com/', 'visit_time' => 780451200.0},
-        {'id' => 2, 'url' => 'https://support.apple.com/', 'visit_time' => 780450000.0},
+        {url: 'https://www.apple.com/', title: nil, visited_at: Time.utc(2025, 9, 25)},
+        {url: 'https://support.apple.com/', title: nil, visited_at: Time.utc(2025, 9, 24, 23, 40)},
       ]
     end
 
@@ -141,7 +141,15 @@ describe Browser::Safari do
       end
 
       it "returns the history" do
-        expect(subject.history.to_json).to eq(expected_history.to_json)
+        expect(subject.history.to_objects).to eq(expected_history)
+      end
+
+      it "returns the visits, with no title, Safari storing none" do
+        visit = subject.history.visits.first
+        expect(visit).to be_a(Browser::Visit)
+        expect(visit.title).to be_nil
+        expect(visit.visited_at).to eq(Time.utc(2025, 9, 25))
+        expect(visit.attributes['visit_time']).to eq(780451200.0)
       end
     end
 

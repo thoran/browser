@@ -26,6 +26,8 @@
 | Firefox and Tor Browser bookmarks with their folders | 0.14.0 | 2026-09-09 |
 | `Browser::Bookmarks#tree`, the bookmarks as a tree, folders and all | 0.17.0 | 2026-10-03 |
 | `profile_path`, the directory a profile sits in | 0.17.0 | 2026-10-03 |
+| `Browser::Visit`, history as one record whatever the browser, the three epochs converted to a `Time` | 0.18.0 | 2026-10-05 |
+| `Browser::History#visits`, the records, each carrying the browser's own columns besides | 0.18.0 | 2026-10-05 |
 
 
 ## Capabilities, per browser, and when each arrived
@@ -40,6 +42,29 @@ The README's table, with each cell holding the version at which it became true.
 | Firefox | 0.7.0 | 0.7.0 | 0.14.0 | 0.5.0 | 0.13.0 |
 | Safari | 0.6.1 | 0.4.0 | 0.10.0 | none | none |
 | Tor Browser | 0.7.0 | 0.7.0 | 0.14.0 | 0.7.0 | 0.13.0 |
+
+## 20261005
+
+0.18.0: + Browser::Visit, history as one representation whatever the browser.
+
+1. + Browser::Visit: url, title and visited_at, the three every browser holds, with the browser's own row kept as attributes.
+2. + Browser::History#visits: the history as those records.
+3. ~ Browser::History#to_objects: the three fields, in place of each browser's own columns, which it had zipped from the query.
+4. The renderers follow to_objects, so to_csv, to_json and to_plist now carry one shape whatever the browser, which is what converting one browser's history to another's wants; a consumer reading the old columns reads them from attributes now.
+5. ~ Browser::History: - column_names taken from the query; + the three.
+6. + Browser::ChromiumBased::HISTORY_EPOCH, FirefoxBased's and Safari's: 1601, 1970 and 2001.
+7. + .visited_at to each of the three: the epoch plus the stored value, through Rational where that value is microseconds, no float being exact over it.
+8. Safari's title is nil throughout, Safari storing none with its history.
+9. A Chromium row stays a url and the last visit to it where Firefox's and Safari's are single visits; TODO holds the visits table which would even it.
+10. + lib/Browser/Visit.rb, + test/Browser/Visit_test.rb
+11. ~ test/Browser/Brave_test.rb, Chrome_test.rb, Chromium_test.rb, Firefox_test.rb, Safari_test.rb, TorBrowser_test.rb: the history expected as the three fields.
+12. ~ the same: to_objects compared, where to_json had been, as the bookmarks are.
+13. + test/Browser/Chromium_test.rb, Firefox_test.rb, Safari_test.rb: #visits, one per family, for the epoch and the surplus.
+14. ~ README.md: + visits and the three epochs; + a Chromium row being a url rather than a visit; ~ the description, bookmarks and history both one representation now.
+15. ~ ROADMAP.md: the representation theme, its history half answered.
+16. ~ TODO: - the history representation, done; + Chromium's visits table.
+17. ~ Browser::VERSION: /0.17.0/0.18.0/
+
 
 ## 20261003
 

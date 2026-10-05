@@ -5,13 +5,12 @@ one change, each with whatever about it is still undecided.
 
 ## One representation for both bookmarks and history
 
-Bookmarks have `Browser::Bookmark`, one shape whatever the browser. History has no
-representation at all: `to_objects` zips each browser's own column names to its rows,
-so Chrome yields `visit_count`, `typed_count` and `hidden` where Firefox yields none
-of them, and Safari has no title. A neutral record of url, title and a `Time` would
-make one browser's history convertible to another's, which is the stated purpose, but
-it drops what only one browser keeps. Whether that record replaces the raw columns or
-sits beside them, and whether the surplus fields are carried or lost, is undecided.
+Bookmarks have `Browser::Bookmark` and history `Browser::Visit`, one shape each
+whatever the browser: a url, a title and a `Time`, with the browser's own row kept
+beside it as `attributes`. 0.18.0 settled what was open here, the neutral record
+replacing the raw columns rather than sitting beside them, and the surplus carried
+rather than lost. What stays uneven is what a row is: a Chromium row is a url and the
+last visit to it where Firefox's and Safari's are single visits, which TODO holds.
 
 Bookmarks are closer but not there. The roots have no canonical identity: Firefox's
 menu, toolbar, unfiled and mobile become display titles, where Chromium's and Safari's

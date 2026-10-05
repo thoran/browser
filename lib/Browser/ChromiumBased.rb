@@ -6,6 +6,7 @@ require_relative './Base'
 class Browser
   class ChromiumBased < Base
     DEFAULT_PROFILE_NAME = "Default"
+    HISTORY_EPOCH = Time.utc(1601) # Chromium counts microseconds from here.
 
     class << self
       def bookmarks_location(profile_name: nil)
@@ -42,6 +43,10 @@ class Browser
 
       def history_sql
         'SELECT * FROM urls ORDER BY last_visit_time DESC;'
+      end
+
+      def visited_at(row)
+        HISTORY_EPOCH + Rational(row['last_visit_time'], 1_000_000)
       end
     end
   end

@@ -1,7 +1,7 @@
 # browser/TODO
 
 - Browser::Rendering::CSV renders through the stdlib CSV, so nothing of ours does the escaping and no monkeypatch ships. Revisit if a better writer becomes available.
-- Browser::History: a representation of its own, as Browser::Bookmark is for bookmarks, with the three epochs converted: Chrome's microseconds from 1601, Firefox's from 1970, Safari's seconds from 2001. See ROADMAP.md on what it should carry.
+- Browser::ChromiumBased.history_sql: the visits table joined to urls, so that a row is one visit as it is for Firefox and Safari, rather than a url and the last visit to it. test/fixtures/ChromiumBased_history.sqlite holds urls alone and would want visits adding.
 - Browser::TorBrowser: locating the bundle when it is installed outside /Applications, which bookmarks_location: and history_location: cover meanwhile. No other browser needs it and it does not port.
 - Browser::Bookmark: the roots given one identity, Firefox's menu, toolbar, unfiled and mobile and the Chromium and Safari equivalents mapping to it, so a converted toolbar lands in a toolbar rather than a folder named after one.
 - Browser::Bookmark: + the dates added and modified, and the guid, which all three sources hold and the readers drop; a second import duplicates everything without it.
